@@ -1,0 +1,9 @@
+--class-path src
+--class-path test
+--main TestMain
+
+--macro nullSafety("hxargs", Strict)
+--dce full
+
+--interp
+# --hl out/main.hl

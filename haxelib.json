@@ -1,0 +1,16 @@
+{
+	"name": "hxargs",
+	"url": "https://github.com/fal-works/hxargs/",
+	"license": "Apache",
+	"tags": [
+		"utility"
+	],
+	"description": "Haxe commandarguments. Type-safe.",
+	"version": "0.1.0",
+	"classPath": "src/",
+	"releasenote": "Initial release. Everything may change in future.",
+	"contributors": [
+		"fal-works"
+	],
+	"dependencies": {}
+}
