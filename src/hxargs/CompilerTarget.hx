@@ -10,16 +10,29 @@ using hxargs.internal.NullExtension;
 **/
 @:using(CompilerTarget.CompilerTargetExtension)
 enum CompilerTarget {
+	/** `--js` **/
 	JavaScript;
+
+	/** `--hl` **/
 	HashLink;
+
+	/** `--jvm` **/
 	Jvm;
+
+	/** `--php` **/
 	Php(?options: {
 		var ?front: String;
 		var ?lib: String;
 		var ?prefix: String;
 	});
+
+	/** `--cpp` **/
 	Cpp;
+
+	/** `--lua` **/
 	Lua;
+
+	/** `--cs` **/
 	CSharp(?options: {
 		var ?net: {
 			var ?libs: Array<{
@@ -30,11 +43,17 @@ enum CompilerTarget {
 		};
 		var ?cArgs: Array<String>;
 	});
+
+	/** `--python` **/
 	Python;
+
+	/** `--java` **/
 	Java(?options: {
 		var ?libs: Array<String>;
 		var ?cArgs: Array<String>;
 	});
+
+	/** `--swf` **/
 	Flash(?options: {
 		var ?swf: {
 			var ?version: String;
@@ -96,7 +115,11 @@ enum CompilerTarget {
 			var ?swfUseDoAbc: Bool;
 		};
 	});
+
+	/** `--neko` / `-x` **/
 	Neko;
+
+	/** `--cppia` **/
 	Cppia;
 }
 
@@ -178,7 +201,7 @@ class CompilerTargetExtension {
 						if (d.swfUseDoAbc == true) ret.push(["-D", "swf_use_doabc"]);
 					});
 				});
-				ret.push(["--flash", outfile]);
+				ret.push(["--swf", outfile]);
 				ret;
 			case Neko:
 				[["--neko", outfile]];
