@@ -43,6 +43,58 @@ enum CompilerTarget {
 			var ?libsExtern: Array<String>;
 		};
 		var ?strict: Bool;
+		var ?defines: {
+			/** `-D advanced-telemetry` **/
+			var ?advancedTelemetry: Bool;
+
+			/** `-D fdb` **/
+			var ?fdb: Bool;
+
+			/** `-D flash_use_stage` **/
+			var ?useStage: Bool;
+
+			/** `-D haxe_boot` **/
+			var ?haxeBoot: Bool;
+
+			/** `-D network-sandbox` **/
+			var ?networkSandbox: Bool;
+
+			/** `-D no-flash-override` **/
+			var ?noOverride: Bool;
+
+			/** `-D no_swf_compress` **/
+			var ?noSwfCompress: Bool;
+
+			/** `-D swc` **/
+			var ?swc: Bool;
+
+			/** `-D swf_compress_level=<level:1-9>` **/
+			var ?swfCompressLevel: Int;
+
+			/** `-D swf_debug_password=<password>` **/
+			var ?swfDebugPassword: String;
+
+			/** `-D swf_direct_blit` **/
+			var ?swfDirectBlit: Bool;
+
+			/** `-D swf_gpu` **/
+			var ?swfGpu: Bool;
+
+			/** `-D swf_metadata` **/
+			var ?swfMetadata: String;
+
+			/** `-D swf_preloader_frame` **/
+			var ?swfPreloaderFrame: Bool;
+
+			/** `-D swf_protected` **/
+			var ?swfProtected: Bool;
+
+			/** `-D swf_script_timeout=<seconds>` **/
+			var ?swfScriptTimeout: Float;
+
+			/** `-D swf_use_doabc` **/
+			var ?swfUseDoAbc: Bool;
+		};
 	});
 	Neko;
 	Cppia;
@@ -106,6 +158,25 @@ class CompilerTargetExtension {
 						swf.libsExtern.mayIter(x -> ret.push(["--swf-lib-extern", x]));
 					});
 					if (opt.strict == true) ret.push(["--flash-strict"]);
+					opt.defines.mayDo(d -> {
+						if (d.advancedTelemetry == true) ret.push(["-D", "advanced-telemetry"]);
+						if (d.fdb == true) ret.push(["-D", "fdb"]);
+						if (d.useStage == true) ret.push(["-D", "flash_use_tage"]);
+						if (d.haxeBoot == true) ret.push(["-D", "haxe_boot"]);
+						if (d.networkSandbox == true) ret.push(["-D", "network-sandbox"]);
+						if (d.noOverride == true) ret.push(["-D", "no-flash-override"]);
+						if (d.noSwfCompress == true) ret.push(["-D", "no_swf_compress"]);
+						if (d.swc == true) ret.push(["-D", "swc"]);
+						d.swfCompressLevel.mayDo(x -> ret.push(["-D", 'swf_compress_level=${x}']));
+						d.swfDebugPassword.mayDo(x -> ret.push(["-D", 'swf_debug_password=${x}']));
+						if (d.swfDirectBlit == true) ret.push(["-D", "swf_direct_blit"]);
+						if (d.swfGpu == true) ret.push(["-D", "swf_gpu"]);
+						d.swfMetadata.mayDo(x -> ret.push(["-D", 'swf_metadata=${x}']));
+						if (d.swfPreloaderFrame == true) ret.push(["-D", "swf_preloader_frame"]);
+						if (d.swfProtected == true) ret.push(["-D", "swf_protected"]);
+						d.swfScriptTimeout.mayDo(x -> ret.push(["-D", 'swf_script_timeout=${x}']));
+						if (d.swfUseDoAbc == true) ret.push(["-D", "swf_use_doabc"]);
+					});
 				});
 				ret.push(["--flash", outfile]);
 				ret;
