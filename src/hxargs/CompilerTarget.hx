@@ -61,12 +61,6 @@ enum CompilerTarget {
 
 			/** `-D objc` **/
 			var ?objC: Bool;
-
-			/** `-D scriptable` **/
-			var ?scriptable: Bool;
-
-			/** `-D vcproj` **/
-			var ?vcproj: Bool;
 		};
 	});
 
@@ -242,8 +236,6 @@ class CompilerTargetExtension {
 						if (d.includePrefix == true) ret.push(["-D", "include_prefix"]);
 						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
 						if (d.objC == true) ret.push(["-D", "objc"]);
-						if (d.scriptable == true) ret.push(["-D", "scriptable"]);
-						if (d.vcproj == true) ret.push(["-D", "vcproj"]);
 					});
 				});
 				ret.push(["--cpp", outfile]);
