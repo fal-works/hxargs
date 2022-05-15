@@ -83,6 +83,46 @@ enum CompilerTarget {
 			var ?stds: Array<String>;
 		};
 		var ?cArgs: Array<String>;
+		var ?defines: {
+			/** `-D core_api_serialize` **/
+			var ?coreApiSerialize: Bool;
+
+			/** `-D cs_ver=<version>` **/
+			var ?csVer: String;
+
+			/** `-D dll_import` **/
+			var ?dllImport: Bool;
+
+			/** `-D erase_generics` **/
+			var ?eraseGenerics: Bool;
+
+			/** `-D fast_cast` **/
+			var ?fastCast: Bool;
+
+			/** `-D keep_old_output` **/
+			var ?keepOldOutput: Bool;
+
+			/** `-D net_ver=<version>` **/
+			var ?netVer: Int;
+
+			/** `-D netcore_ver=<version:x.x.x>` **/
+			var ?netcoreVer: String;
+
+			/** `-D net_target=<name>` **/
+			var ?netTarget: String;
+
+			/** `-D no-compilation` **/
+			var ?noCompilation: Bool;
+
+			/** `-D no_root` **/
+			var ?noRoot: Bool;
+
+			/** `-D real_position` **/
+			var ?realPosition: Bool;
+
+			/** `-D unsafe` **/
+			var ?unsafe: Bool;
+		};
 	});
 
 	/** `--python` **/
@@ -213,6 +253,21 @@ class CompilerTargetExtension {
 			case CSharp(options):
 				final ret = [];
 				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.coreApiSerialize == true) ret.push(["-D", "core_api_serialize"]);
+						d.csVer.mayDo(x -> ret.push(["-D", 'cs_ver=${x}']));
+						if (d.dllImport == true) ret.push(["-D", "dll_import"]);
+						if (d.eraseGenerics == true) ret.push(["-D", "erase_generics"]);
+						if (d.fastCast == true) ret.push(["-D", "fast_cast"]);
+						if (d.keepOldOutput == true) ret.push(["-D", "keep_old_output"]);
+						d.netVer.mayDo(x -> ret.push(["-D", 'net_ver=${x}']));
+						d.netcoreVer.mayDo(x -> ret.push(["-D", 'netcore_ver=${x}']));
+						d.netTarget.mayDo(x -> ret.push(["-D", 'net_target=${x}']));
+						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+						if (d.noRoot == true) ret.push(["-D", "no_root"]);
+						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+						if (d.unsafe == true) ret.push(["-D", "unsafe"]);
+					});
 					opt.net.mayDo(net -> {
 						net.libs.mayIter(e -> {
 							ret.push(["--net-lib", if (e.std == true) '${e.file}@std' else e.file]);
