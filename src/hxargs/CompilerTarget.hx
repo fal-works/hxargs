@@ -303,7 +303,12 @@ enum CompilerTarget {
 	});
 
 	/** `--cppia` **/
-	Cppia;
+	Cppia(?options: {
+		var ?defines: {
+			/** `-D nocppiaast` **/
+			var ?noCppiaAst: Bool;
+		};
+	});
 }
 
 class CompilerTargetExtension {
@@ -490,8 +495,15 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--neko", outfile]);
 				ret;
-			case Cppia:
-				[["--cppia", outfile]];
+			case Cppia(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.noCppiaAst == true) ret.push(["-D", "nocppiaast"]);
+					});
+				});
+				ret.push(["--cppia", outfile]);
+				ret;
 		}
 	}
 
