@@ -37,7 +37,15 @@ enum CompilerTarget {
 	});
 
 	/** `--hl` **/
-	HashLink;
+	HashLink(?options: {
+		var ?defines: {
+			/** `-D hl-ver=<version:x.x.x>` **/
+			var ?hlVer: String;
+
+			/** `-D no-compilation` **/
+			var ?noCompilation: Bool;
+		};
+	});
 
 	/** `--jvm` **/
 	Jvm;
@@ -296,8 +304,16 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--js", outfile]);
 				ret;
-			case HashLink:
-				[["--hl", outfile]];
+			case HashLink(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						d.hlVer.mayDo(x -> ret.push(["-D", 'hl-ver=${x}']));
+						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+					});
+				});
+				ret.push(["--hl", outfile]);
+				ret;
 			case Jvm:
 				[["--jvm", outfile]];
 			case Php(options):
@@ -447,7 +463,7 @@ class CompilerTargetExtension {
 		target: CompilerTarget
 	): Null<(path: String) -> Array<String>> {
 		return switch target {
-			case HashLink: path -> ["hl", path];
+			case HashLink(_): path -> ["hl", path];
 			case Jvm: path -> [
 					"java",
 					"-jar",
