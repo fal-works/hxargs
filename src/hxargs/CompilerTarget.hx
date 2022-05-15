@@ -316,195 +316,189 @@ class CompilerTargetExtension {
 		target: CompilerTarget,
 		outfile: String
 	): Array<Array<String>> {
-		return switch target {
+		final args: Array<Array<String>> = [];
+		inline function addDef(s: String): Void
+			args.push(["-D", s]);
+
+		switch target {
 			case JavaScript(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.classic == true) ret.push(["-D", "js_classic"]);
-						d.es.mayDo(x -> ret.push(["-D", 'js_es=${x}']));
-						if (d.enumAsArrays == true) ret.push(["-D", "js_enums_as_arrays"]);
-						d.global.mayDo(x -> ret.push(["-D", 'js_global=${x}']));
-						if (d.unflatten == true) ret.push(["-D", "js_unflatten"]);
-						if (d.shallowExpose == true) ret.push(["-D", "shallow-expose"]);
-						if (d.sourceMap == true) ret.push(["-D", "source-map"]);
-						if (d.sourceMapContent == true) ret.push(["-D", "source-map-content"]);
+						if (d.classic == true) addDef("js_classic");
+						d.es.mayDo(x -> addDef('js_es=${x}'));
+						if (d.enumAsArrays == true) addDef("js_enums_as_arrays");
+						d.global.mayDo(x -> addDef('js_global=${x}'));
+						if (d.unflatten == true) addDef("js_unflatten");
+						if (d.shallowExpose == true) addDef("shallow-expose");
+						if (d.sourceMap == true) addDef("source-map");
+						if (d.sourceMapContent == true) addDef("source-map-content");
 					});
 				});
-				ret.push(["--js", outfile]);
-				ret;
+				args.push(["--js", outfile]);
+
 			case HashLink(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						d.hlVer.mayDo(x -> ret.push(["-D", 'hl-ver=${x}']));
-						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+						d.hlVer.mayDo(x -> addDef('hl-ver=${x}'));
+						if (d.noCompilation == true) addDef("no-compilation");
 					});
 				});
-				ret.push(["--hl", outfile]);
-				ret;
+				args.push(["--hl", outfile]);
+
 			case Jvm:
 				[["--jvm", outfile]];
 			case Php(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.sourceMap == true) ret.push(["-D", "source-map"]);
-						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+						if (d.sourceMap == true) addDef("source-map");
+						if (d.realPosition == true) addDef("real_position");
 					});
-					opt.front.mayDo(x -> ret.push(["-D", 'php-front=${x}']));
-					opt.lib.mayDo(x -> ret.push(["-D", 'php-lib=${x}']));
-					opt.prefix.mayDo(x -> ret.push(["-D", 'php-prefix=${x}']));
+					opt.front.mayDo(x -> addDef('php-front=${x}'));
+					opt.lib.mayDo(x -> addDef('php-lib=${x}'));
+					opt.prefix.mayDo(x -> addDef('php-prefix=${x}'));
 				});
-				ret.push(["--php", outfile]);
-				ret;
+				args.push(["--php", outfile]);
+
 			case Cpp(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.annotateSource == true) ret.push(["-D", "annotate_source"]);
+						if (d.annotateSource == true) addDef("annotate_source");
 						if (d.disableUnicodeStrings == true)
-							ret.push(["-D", "disable_unicode_strings"]);
-						if (d.dllExport == true) ret.push(["-D", "dll_export"]);
+							addDef("disable_unicode_strings");
+						if (d.dllExport == true) addDef("dll_export");
 						if (d.dynamicInterfaceClosures == true)
-							ret.push(["-D", "dynamic_interface_closures"]);
-						d.fileExtension.mayDo(x -> ret.push(["-D", 'file-extension=${x}']));
-						if (d.forceNativeProperty == true) ret.push(["-D", "force_native_property"]);
-						if (d.hxcppGcGenerational == true) ret.push(["-D", "hxcpp_gc_generational"]);
-						if (d.hxcppDebugger == true) ret.push(["-D", "hxcpp_debugger"]);
-						if (d.hxcppSmartString == true) ret.push(["-D", "hxcpp_smart_strings"]);
-						if (d.includePrefix == true) ret.push(["-D", "include_prefix"]);
-						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
-						if (d.noDebug == true) ret.push(["-D", "no-debug"]);
-						if (d.objC == true) ret.push(["-D", "objc"]);
+							addDef("dynamic_interface_closures");
+						d.fileExtension.mayDo(x -> addDef('file-extension=${x}'));
+						if (d.forceNativeProperty == true) addDef("force_native_property");
+						if (d.hxcppGcGenerational == true) addDef("hxcpp_gc_generational");
+						if (d.hxcppDebugger == true) addDef("hxcpp_debugger");
+						if (d.hxcppSmartString == true) addDef("hxcpp_smart_strings");
+						if (d.includePrefix == true) addDef("include_prefix");
+						if (d.noCompilation == true) addDef("no-compilation");
+						if (d.noDebug == true) addDef("no-debug");
+						if (d.objC == true) addDef("objc");
 					});
 				});
-				ret.push(["--cpp", outfile]);
-				ret;
+				args.push(["--cpp", outfile]);
+
 			case Lua(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.jit == true) ret.push(["-D", "lua_jit"]);
-						if (d.vanilla == true) ret.push(["-D", "lua_vanilla"]);
-						d.luaVer.mayDo(x -> ret.push(["-D", 'lua_ver=${x}']));
+						if (d.jit == true) addDef("lua_jit");
+						if (d.vanilla == true) addDef("lua_vanilla");
+						d.luaVer.mayDo(x -> addDef('lua_ver=${x}'));
 					});
 				});
-				ret.push(["--lua", outfile]);
-				ret;
+				args.push(["--lua", outfile]);
+
 			case CSharp(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.coreApiSerialize == true) ret.push(["-D", "core_api_serialize"]);
-						d.csVer.mayDo(x -> ret.push(["-D", 'cs_ver=${x}']));
-						if (d.dllImport == true) ret.push(["-D", "dll_import"]);
-						if (d.eraseGenerics == true) ret.push(["-D", "erase_generics"]);
-						if (d.fastCast == true) ret.push(["-D", "fast_cast"]);
-						if (d.keepOldOutput == true) ret.push(["-D", "keep_old_output"]);
-						d.netVer.mayDo(x -> ret.push(["-D", 'net_ver=${x}']));
-						d.netcoreVer.mayDo(x -> ret.push(["-D", 'netcore_ver=${x}']));
-						d.netTarget.mayDo(x -> ret.push(["-D", 'net_target=${x}']));
-						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
-						if (d.noRoot == true) ret.push(["-D", "no_root"]);
-						if (d.realPosition == true) ret.push(["-D", "real_position"]);
-						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
-						if (d.unsafe == true) ret.push(["-D", "unsafe"]);
+						if (d.coreApiSerialize == true) addDef("core_api_serialize");
+						d.csVer.mayDo(x -> addDef('cs_ver=${x}'));
+						if (d.dllImport == true) addDef("dll_import");
+						if (d.eraseGenerics == true) addDef("erase_generics");
+						if (d.fastCast == true) addDef("fast_cast");
+						if (d.keepOldOutput == true) addDef("keep_old_output");
+						d.netVer.mayDo(x -> addDef('net_ver=${x}'));
+						d.netcoreVer.mayDo(x -> addDef('netcore_ver=${x}'));
+						d.netTarget.mayDo(x -> addDef('net_target=${x}'));
+						if (d.noCompilation == true) addDef("no-compilation");
+						if (d.noRoot == true) addDef("no_root");
+						if (d.realPosition == true) addDef("real_position");
+						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
+						if (d.unsafe == true) addDef("unsafe");
 					});
 					opt.net.mayDo(net -> {
 						net.libs.mayIter(e -> {
-							ret.push(["--net-lib", if (e.std == true) '${e.file}@std' else e.file]);
+							args.push(["--net-lib", if (e.std == true) '${e.file}@std' else e.file]);
 						});
-						net.stds.mayIter(x -> ret.push(["--net-std", x]));
+						net.stds.mayIter(x -> args.push(["--net-std", x]));
 					});
-					opt.cArgs.mayIter(x -> ret.push(["--c-arg", x]));
+					opt.cArgs.mayIter(x -> args.push(["--c-arg", x]));
 				});
-				ret.push(["--cs", outfile]);
-				ret;
+				args.push(["--cs", outfile]);
+
 			case Python(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						d.pythonVer.mayDo(x -> ret.push(["-D", 'python_version=${x}']));
-						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
+						d.pythonVer.mayDo(x -> addDef('python_version=${x}'));
+						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
 					});
 				});
-				ret.push(["--python", outfile]);
-				ret;
+				args.push(["--python", outfile]);
+
 			case Java(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.fastCast == true) ret.push(["-D", "fast_cast"]);
-						d.javaVer.mayDo(x -> ret.push(["-D", 'java_ver=${x}']));
-						if (d.jvm == true) ret.push(["-D", "jvm"]);
+						if (d.fastCast == true) addDef("fast_cast");
+						d.javaVer.mayDo(x -> addDef('java_ver=${x}'));
+						if (d.jvm == true) addDef("jvm");
 						d.jvmCompressionLevel.mayDo(x -> {
-							ret.push(["-D", 'jvm.compression-level=${x}']);
+							addDef('jvm.compression-level=${x}');
 						});
-						d.jvmDynamicLevel.mayDo(x -> ret.push(["-D", 'jvm.dynamic-level=${x}']));
-						if (d.keepOldOutput == true) ret.push(["-D", "keep_old_output"]);
-						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
-						if (d.realPosition == true) ret.push(["-D", "real_position"]);
-						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
+						d.jvmDynamicLevel.mayDo(x -> addDef('jvm.dynamic-level=${x}'));
+						if (d.keepOldOutput == true) addDef("keep_old_output");
+						if (d.noCompilation == true) addDef("no-compilation");
+						if (d.realPosition == true) addDef("real_position");
+						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
 					});
-					opt.libs.mayIter(x -> ret.push(["--java-lib", x]));
-					opt.cArgs.mayIter(x -> ret.push(["--c-arg", x]));
+					opt.libs.mayIter(x -> args.push(["--java-lib", x]));
+					opt.cArgs.mayIter(x -> args.push(["--c-arg", x]));
 				});
-				ret.push(["--java", outfile]);
-				ret;
+				args.push(["--java", outfile]);
+
 			case Flash(options):
-				final ret = [];
 				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.advancedTelemetry == true) addDef("advanced-telemetry");
+						if (d.fdb == true) addDef("fdb");
+						if (d.useStage == true) addDef("flash_use_tage");
+						if (d.haxeBoot == true) addDef("haxe_boot");
+						if (d.networkSandbox == true) addDef("network-sandbox");
+						if (d.noOverride == true) addDef("no-flash-override");
+						if (d.noSwfCompress == true) addDef("no_swf_compress");
+						if (d.swc == true) addDef("swc");
+						d.swfCompressLevel.mayDo(x -> addDef('swf_compress_level=${x}'));
+						d.swfDebugPassword.mayDo(x -> addDef('swf_debug_password=${x}'));
+						if (d.swfDirectBlit == true) addDef("swf_direct_blit");
+						if (d.swfGpu == true) addDef("swf_gpu");
+						d.swfMetadata.mayDo(x -> addDef('swf_metadata=${x}'));
+						if (d.swfPreloaderFrame == true) addDef("swf_preloader_frame");
+						if (d.swfProtected == true) addDef("swf_protected");
+						d.swfScriptTimeout.mayDo(x -> addDef('swf_script_timeout=${x}'));
+						if (d.swfUseDoAbc == true) addDef("swf_use_doabc");
+					});
 					opt.swf.mayDo(swf -> {
-						swf.version.mayDo(x -> ret.push(["--swf-version", x]));
-						swf.header.mayDo(x -> ret.push(["--swf-header", x]));
-						swf.libs.mayIter(x -> ret.push(["--swf-lib", x]));
-						swf.libsExtern.mayIter(x -> ret.push(["--swf-lib-extern", x]));
+						swf.version.mayDo(x -> args.push(["--swf-version", x]));
+						swf.header.mayDo(x -> args.push(["--swf-header", x]));
+						swf.libs.mayIter(x -> args.push(["--swf-lib", x]));
+						swf.libsExtern.mayIter(x -> args.push(["--swf-lib-extern", x]));
 					});
-					if (opt.strict == true) ret.push(["--flash-strict"]);
-					opt.defines.mayDo(d -> {
-						if (d.advancedTelemetry == true) ret.push(["-D", "advanced-telemetry"]);
-						if (d.fdb == true) ret.push(["-D", "fdb"]);
-						if (d.useStage == true) ret.push(["-D", "flash_use_tage"]);
-						if (d.haxeBoot == true) ret.push(["-D", "haxe_boot"]);
-						if (d.networkSandbox == true) ret.push(["-D", "network-sandbox"]);
-						if (d.noOverride == true) ret.push(["-D", "no-flash-override"]);
-						if (d.noSwfCompress == true) ret.push(["-D", "no_swf_compress"]);
-						if (d.swc == true) ret.push(["-D", "swc"]);
-						d.swfCompressLevel.mayDo(x -> ret.push(["-D", 'swf_compress_level=${x}']));
-						d.swfDebugPassword.mayDo(x -> ret.push(["-D", 'swf_debug_password=${x}']));
-						if (d.swfDirectBlit == true) ret.push(["-D", "swf_direct_blit"]);
-						if (d.swfGpu == true) ret.push(["-D", "swf_gpu"]);
-						d.swfMetadata.mayDo(x -> ret.push(["-D", 'swf_metadata=${x}']));
-						if (d.swfPreloaderFrame == true) ret.push(["-D", "swf_preloader_frame"]);
-						if (d.swfProtected == true) ret.push(["-D", "swf_protected"]);
-						d.swfScriptTimeout.mayDo(x -> ret.push(["-D", 'swf_script_timeout=${x}']));
-						if (d.swfUseDoAbc == true) ret.push(["-D", "swf_use_doabc"]);
-					});
+					if (opt.strict == true) args.push(["--flash-strict"]);
 				});
-				ret.push(["--swf", outfile]);
-				ret;
+				args.push(["--swf", outfile]);
+
 			case Neko(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.nekoSource == true) ret.push(["-D", "neko_source"]);
-						if (d.nekoV1 == true) ret.push(["-D", "neko_v1"]);
-						if (d.useNekoc == true) ret.push(["-D", "use_nekoc"]);
+						if (d.nekoSource == true) addDef("neko_source");
+						if (d.nekoV1 == true) addDef("neko_v1");
+						if (d.useNekoc == true) addDef("use_nekoc");
 					});
 				});
-				ret.push(["--neko", outfile]);
-				ret;
+				args.push(["--neko", outfile]);
+
 			case Cppia(options):
-				final ret = [];
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.noCppiaAst == true) ret.push(["-D", "nocppiaast"]);
+						if (d.noCppiaAst == true) addDef("nocppiaast");
 					});
 				});
-				ret.push(["--cppia", outfile]);
-				ret;
+				args.push(["--cppia", outfile]);
 		}
+
+		return args;
 	}
 
 	public static function defaultRunCommand(
