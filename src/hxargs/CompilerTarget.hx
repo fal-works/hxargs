@@ -95,7 +95,18 @@ enum CompilerTarget {
 	});
 
 	/** `--lua` **/
-	Lua;
+	Lua(?options: {
+		var ?defines: {
+			/** `-D lua_jit` **/
+			var ?jit: Bool;
+
+			/** `-D lua_vanilla` **/
+			var ?vanilla: Bool;
+
+			/** `-D lua_ver=<version>` **/
+			var ?luaVer: String;
+		};
+	});
 
 	/** `--cs` **/
 	CSharp(?options: {
@@ -312,8 +323,17 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--cpp", outfile]);
 				ret;
-			case Lua:
-				[["--lua", outfile]];
+			case Lua(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.jit == true) ret.push(["-D", "lua_jit"]);
+						if (d.vanilla == true) ret.push(["-D", "lua_vanilla"]);
+						d.luaVer.mayDo(x -> ret.push(["-D", 'lua_ver=${x}']));
+					});
+				});
+				ret.push(["--lua", outfile]);
+				ret;
 			case CSharp(options):
 				final ret = [];
 				options.mayDo(opt -> {
