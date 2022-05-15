@@ -258,7 +258,18 @@ enum CompilerTarget {
 	});
 
 	/** `--neko` / `-x` **/
-	Neko;
+	Neko(?options: {
+		var ?defines: {
+			/** `-D neko_source` **/
+			var ?nekoSource: Bool;
+
+			/** `-D neko_v1` **/
+			var ?nekoV1: Bool;
+
+			/** `-D use_nekoc` **/
+			var ?useNekoc: Bool;
+		};
+	});
 
 	/** `--cppia` **/
 	Cppia;
@@ -416,8 +427,17 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--swf", outfile]);
 				ret;
-			case Neko:
-				[["--neko", outfile]];
+			case Neko(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.nekoSource == true) ret.push(["-D", "neko_source"]);
+						if (d.nekoV1 == true) ret.push(["-D", "neko_v1"]);
+						if (d.useNekoc == true) ret.push(["-D", "use_nekoc"]);
+					});
+				});
+				ret.push(["--neko", outfile]);
+				ret;
 			case Cppia:
 				[["--cppia", outfile]];
 		}
@@ -433,7 +453,7 @@ class CompilerTargetExtension {
 					"-jar",
 					path
 				];
-			case Neko: path -> ["neko", path];
+			case Neko(_): path -> ["neko", path];
 			case _: null;
 		}
 	}
