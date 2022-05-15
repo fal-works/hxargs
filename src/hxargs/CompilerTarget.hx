@@ -3,8 +3,6 @@ package hxargs;
 using hxargs.internal.LambdaInline;
 using hxargs.internal.NullExtension;
 
-// TODO: target-specific defines
-
 /**
 	Haxe compiler target with some options (if available).
 **/
@@ -55,10 +53,16 @@ enum CompilerTarget {
 
 	/** `--php` **/
 	Php(?options: {
-		var ?front: String;
-		var ?lib: String;
-		var ?prefix: String;
 		var ?defines: {
+			/** `-D php-front=<filename>` **/
+			var ?front: String;
+
+			/** `-D php-lib=<filename>` **/
+			var ?lib: String;
+
+			/** `-D php-prefix=<name>` **/
+			var ?prefix: String;
+
 			/** `-D source-map` **/
 			var ?sourceMap: Bool;
 
@@ -317,21 +321,29 @@ class CompilerTargetExtension {
 		outfile: String
 	): Array<Array<String>> {
 		final args: Array<Array<String>> = [];
-		inline function addDef(s: String): Void
-			args.push(["-D", s]);
+		inline function optFlag(input: Null<Bool>, optionName: String): Void
+			if (input == true) args.push([optionName]);
+		inline function optVal<T>(input: Null<T>, optionName: String): Void
+			input.mayDo(x -> args.push([optionName, Std.string(x)]));
+		inline function optVals<T>(input: Null<Array<T>>, optionName: String): Void
+			input.mayIter(x -> args.push([optionName, Std.string(x)]));
+		inline function dFlag(input: Null<Bool>, name: String): Void
+			if (input == true) args.push(["-D", name]);
+		inline function dVal<T>(input: Null<T>, name: String): Void
+			input.mayDo(x -> args.push(["-D", '${name}=${Std.string(x)}']));
 
 		switch target {
 			case JavaScript(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.classic == true) addDef("js_classic");
-						d.es.mayDo(x -> addDef('js_es=${x}'));
-						if (d.enumAsArrays == true) addDef("js_enums_as_arrays");
-						d.global.mayDo(x -> addDef('js_global=${x}'));
-						if (d.unflatten == true) addDef("js_unflatten");
-						if (d.shallowExpose == true) addDef("shallow-expose");
-						if (d.sourceMap == true) addDef("source-map");
-						if (d.sourceMapContent == true) addDef("source-map-content");
+						dFlag(d.classic, "js_classic");
+						dVal(d.es, "js_es");
+						dFlag(d.enumAsArrays, "js_enums_as_arrays");
+						dVal(d.global, "$2");
+						dFlag(d.unflatten, "js_unflatten");
+						dFlag(d.shallowExpose, "shallow-expose");
+						dFlag(d.sourceMap, "source-map");
+						dFlag(d.sourceMapContent, "source-map-content");
 					});
 				});
 				args.push(["--js", outfile]);
@@ -339,8 +351,8 @@ class CompilerTargetExtension {
 			case HashLink(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						d.hlVer.mayDo(x -> addDef('hl-ver=${x}'));
-						if (d.noCompilation == true) addDef("no-compilation");
+						dVal(d.hlVer, "hl-ver");
+						dFlag(d.noCompilation, "no-compilation");
 					});
 				});
 				args.push(["--hl", outfile]);
@@ -350,33 +362,31 @@ class CompilerTargetExtension {
 			case Php(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.sourceMap == true) addDef("source-map");
-						if (d.realPosition == true) addDef("real_position");
+						dVal(d.front, "php-front");
+						dVal(d.lib, "php-lib");
+						dVal(d.prefix, "php-prefix");
+						dFlag(d.sourceMap, "source-map");
+						dFlag(d.realPosition, "real_position");
 					});
-					opt.front.mayDo(x -> addDef('php-front=${x}'));
-					opt.lib.mayDo(x -> addDef('php-lib=${x}'));
-					opt.prefix.mayDo(x -> addDef('php-prefix=${x}'));
 				});
 				args.push(["--php", outfile]);
 
 			case Cpp(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.annotateSource == true) addDef("annotate_source");
-						if (d.disableUnicodeStrings == true)
-							addDef("disable_unicode_strings");
-						if (d.dllExport == true) addDef("dll_export");
-						if (d.dynamicInterfaceClosures == true)
-							addDef("dynamic_interface_closures");
-						d.fileExtension.mayDo(x -> addDef('file-extension=${x}'));
-						if (d.forceNativeProperty == true) addDef("force_native_property");
-						if (d.hxcppGcGenerational == true) addDef("hxcpp_gc_generational");
-						if (d.hxcppDebugger == true) addDef("hxcpp_debugger");
-						if (d.hxcppSmartString == true) addDef("hxcpp_smart_strings");
-						if (d.includePrefix == true) addDef("include_prefix");
-						if (d.noCompilation == true) addDef("no-compilation");
-						if (d.noDebug == true) addDef("no-debug");
-						if (d.objC == true) addDef("objc");
+						dFlag(d.annotateSource, "annotate_source");
+						dFlag(d.disableUnicodeStrings, "disable_unicode_strings");
+						dFlag(d.dllExport, "dll_export");
+						dFlag(d.dynamicInterfaceClosures, "dynamic_interface_closures");
+						dVal(d.fileExtension, "file-extension");
+						dFlag(d.forceNativeProperty, "force_native_property");
+						dFlag(d.hxcppGcGenerational, "hxcpp_gc_generational");
+						dFlag(d.hxcppDebugger, "hxcpp_debugger");
+						dFlag(d.hxcppSmartString, "hxcpp_smart_strings");
+						dFlag(d.includePrefix, "include_prefix");
+						dFlag(d.noCompilation, "no-compilation");
+						dFlag(d.noDebug, "no-debug");
+						dFlag(d.objC, "objc");
 					});
 				});
 				args.push(["--cpp", outfile]);
@@ -384,9 +394,9 @@ class CompilerTargetExtension {
 			case Lua(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.jit == true) addDef("lua_jit");
-						if (d.vanilla == true) addDef("lua_vanilla");
-						d.luaVer.mayDo(x -> addDef('lua_ver=${x}'));
+						dFlag(d.jit, "lua_jit");
+						dFlag(d.vanilla, "lua_vanilla");
+						dVal(d.luaVer, "lua_ver");
 					});
 				});
 				args.push(["--lua", outfile]);
@@ -394,36 +404,36 @@ class CompilerTargetExtension {
 			case CSharp(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.coreApiSerialize == true) addDef("core_api_serialize");
-						d.csVer.mayDo(x -> addDef('cs_ver=${x}'));
-						if (d.dllImport == true) addDef("dll_import");
-						if (d.eraseGenerics == true) addDef("erase_generics");
-						if (d.fastCast == true) addDef("fast_cast");
-						if (d.keepOldOutput == true) addDef("keep_old_output");
-						d.netVer.mayDo(x -> addDef('net_ver=${x}'));
-						d.netcoreVer.mayDo(x -> addDef('netcore_ver=${x}'));
-						d.netTarget.mayDo(x -> addDef('net_target=${x}'));
-						if (d.noCompilation == true) addDef("no-compilation");
-						if (d.noRoot == true) addDef("no_root");
-						if (d.realPosition == true) addDef("real_position");
-						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
-						if (d.unsafe == true) addDef("unsafe");
+						dFlag(d.coreApiSerialize, "core_api_serialize");
+						dVal(d.csVer, "cs_ver");
+						dFlag(d.dllImport, "dll_import");
+						dFlag(d.eraseGenerics, "erase_generics");
+						dFlag(d.fastCast, "fast_cast");
+						dFlag(d.keepOldOutput, "keep_old_output");
+						dVal(d.netVer, "net_ver");
+						dVal(d.netcoreVer, "netcore_ver");
+						dVal(d.netTarget, "net_target");
+						dFlag(d.noCompilation, "no-compilation");
+						dFlag(d.noRoot, "no_root");
+						dFlag(d.realPosition, "real_position");
+						dFlag(d.stdEncodingUtf8, "std-encoding-utf8");
+						dFlag(d.unsafe, "unsafe");
 					});
 					opt.net.mayDo(net -> {
 						net.libs.mayIter(e -> {
 							args.push(["--net-lib", if (e.std == true) '${e.file}@std' else e.file]);
 						});
-						net.stds.mayIter(x -> args.push(["--net-std", x]));
+						optVals(net.stds, "--net-std");
 					});
-					opt.cArgs.mayIter(x -> args.push(["--c-arg", x]));
+					optVals(opt.cArgs, "--c-arg");
 				});
 				args.push(["--cs", outfile]);
 
 			case Python(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						d.pythonVer.mayDo(x -> addDef('python_version=${x}'));
-						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
+						dVal(d.pythonVer, "python_version");
+						dFlag(d.stdEncodingUtf8, "std-encoding-utf8");
 					});
 				});
 				args.push(["--python", outfile]);
@@ -431,60 +441,58 @@ class CompilerTargetExtension {
 			case Java(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.fastCast == true) addDef("fast_cast");
-						d.javaVer.mayDo(x -> addDef('java_ver=${x}'));
-						if (d.jvm == true) addDef("jvm");
-						d.jvmCompressionLevel.mayDo(x -> {
-							addDef('jvm.compression-level=${x}');
-						});
-						d.jvmDynamicLevel.mayDo(x -> addDef('jvm.dynamic-level=${x}'));
-						if (d.keepOldOutput == true) addDef("keep_old_output");
-						if (d.noCompilation == true) addDef("no-compilation");
-						if (d.realPosition == true) addDef("real_position");
-						if (d.stdEncodingUtf8 == true) addDef("std-encoding-utf8");
+						dFlag(d.fastCast, "fast_cast");
+						dVal(d.javaVer, "java_ver");
+						dFlag(d.jvm, "jvm");
+						dVal(d.jvmCompressionLevel, "jvm.compression-level");
+						dVal(d.jvmDynamicLevel, "jvm.dynamic-level");
+						dFlag(d.keepOldOutput, "keep_old_output");
+						dFlag(d.noCompilation, "no-compilation");
+						dFlag(d.realPosition, "real_position");
+						dFlag(d.stdEncodingUtf8, "std-encoding-utf8");
 					});
-					opt.libs.mayIter(x -> args.push(["--java-lib", x]));
-					opt.cArgs.mayIter(x -> args.push(["--c-arg", x]));
+					optVals(opt.libs, "--java-lib");
+					optVals(opt.cArgs, "--c-arg");
 				});
 				args.push(["--java", outfile]);
 
 			case Flash(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.advancedTelemetry == true) addDef("advanced-telemetry");
-						if (d.fdb == true) addDef("fdb");
-						if (d.useStage == true) addDef("flash_use_tage");
-						if (d.haxeBoot == true) addDef("haxe_boot");
-						if (d.networkSandbox == true) addDef("network-sandbox");
-						if (d.noOverride == true) addDef("no-flash-override");
-						if (d.noSwfCompress == true) addDef("no_swf_compress");
-						if (d.swc == true) addDef("swc");
-						d.swfCompressLevel.mayDo(x -> addDef('swf_compress_level=${x}'));
-						d.swfDebugPassword.mayDo(x -> addDef('swf_debug_password=${x}'));
-						if (d.swfDirectBlit == true) addDef("swf_direct_blit");
-						if (d.swfGpu == true) addDef("swf_gpu");
-						d.swfMetadata.mayDo(x -> addDef('swf_metadata=${x}'));
-						if (d.swfPreloaderFrame == true) addDef("swf_preloader_frame");
-						if (d.swfProtected == true) addDef("swf_protected");
-						d.swfScriptTimeout.mayDo(x -> addDef('swf_script_timeout=${x}'));
-						if (d.swfUseDoAbc == true) addDef("swf_use_doabc");
+						dFlag(d.advancedTelemetry, "advanced-telemetry");
+						dFlag(d.fdb, "fdb");
+						dFlag(d.useStage, "flash_use_tage");
+						dFlag(d.haxeBoot, "haxe_boot");
+						dFlag(d.networkSandbox, "network-sandbox");
+						dFlag(d.noOverride, "no-flash-override");
+						dFlag(d.noSwfCompress, "no_swf_compress");
+						dFlag(d.swc, "swc");
+						dVal(d.swfCompressLevel, "swf_compress_level");
+						dVal(d.swfDebugPassword, "swf_debug_password");
+						dFlag(d.swfDirectBlit, "swf_direct_blit");
+						dFlag(d.swfGpu, "swf_gpu");
+						dVal(d.swfMetadata, "swf_metadata");
+						dFlag(d.swfPreloaderFrame, "swf_preloader_frame");
+						dFlag(d.swfProtected, "swf_protected");
+						dVal(d.swfScriptTimeout, "swf_script_timeout");
+						dFlag(d.swfUseDoAbc, "swf_use_doabc");
 					});
 					opt.swf.mayDo(swf -> {
-						swf.version.mayDo(x -> args.push(["--swf-version", x]));
-						swf.header.mayDo(x -> args.push(["--swf-header", x]));
-						swf.libs.mayIter(x -> args.push(["--swf-lib", x]));
-						swf.libsExtern.mayIter(x -> args.push(["--swf-lib-extern", x]));
+						optVal(swf.version, "--swf-version");
+						optVal(swf.header, "--swf-header");
+						optVals(swf.libs, "--swf-lib");
+						optVals(swf.libsExtern, "--swf-lib-extern");
 					});
-					if (opt.strict == true) args.push(["--flash-strict"]);
+					optFlag(opt.strict, "--flash-strict");
 				});
 				args.push(["--swf", outfile]);
 
 			case Neko(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.nekoSource == true) addDef("neko_source");
-						if (d.nekoV1 == true) addDef("neko_v1");
-						if (d.useNekoc == true) addDef("use_nekoc");
+						dFlag(d.nekoSource, "neko_source");
+						dFlag(d.nekoV1, "neko_v1");
+						dFlag(d.useNekoc, "use_nekoc");
 					});
 				});
 				args.push(["--neko", outfile]);
@@ -492,7 +500,7 @@ class CompilerTargetExtension {
 			case Cppia(options):
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
-						if (d.noCppiaAst == true) addDef("nocppiaast");
+						dFlag(d.noCppiaAst, "nocppiaast");
 					});
 				});
 				args.push(["--cppia", outfile]);
