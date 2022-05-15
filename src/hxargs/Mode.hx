@@ -6,7 +6,21 @@ using hxargs.internal.NullExtension;
 @:using(Mode.ModeExtension)
 enum Mode {
 	Compile(compilerMode: CompilerMode, target: CompilerTarget);
-	Interpret(interpreterMode: InterpreterMode);
+	Interpret(interpreterMode: InterpreterMode, ?options: {
+		var ?defines: {
+			/** `-D eval-call-stack-depth=<depth>` **/
+			var ?callStackDepth: Int;
+
+			/** `-D eval-debugger=[host:port]` **/
+			var ?debugger: Any;
+
+			/** `-D eval-stack` **/
+			var ?stack: Bool;
+
+			/** `-D eval-times` **/
+			var ?times: Bool;
+		};
+	});
 }
 
 class ModeExtension {
@@ -41,7 +55,19 @@ class ModeExtension {
 				target.toCommandArguments(outfile).iter(x -> args.push(x));
 				options.iter(x -> args.push(x));
 
-			case Interpret(interpreterMode):
+			case Interpret(interpreterMode, options):
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						d.callStackDepth.mayDo(x -> args.push(["-D", 'eval-call-stack-depth=${x}']));
+						d.debugger.mayDo(x -> {
+							final hasValue = Std.isOfType(x, Int) || Std.isOfType(x, String);
+							if (hasValue) args.push(["-D", 'eval-debugger=${x}']);
+							else if (x != false) args.push(["-D", "eval-debugger"]);
+						});
+						if (d.stack == true) args.push(["-D", "eval-stack"]);
+						if (d.times == true) args.push(["-D", "eval-times"]);
+					});
+				});
 				switch interpreterMode {
 					case Run:
 						args.push(["--interp"]);
