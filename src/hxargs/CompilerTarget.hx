@@ -27,7 +27,48 @@ enum CompilerTarget {
 	});
 
 	/** `--cpp` **/
-	Cpp;
+	Cpp(?options: {
+		var ?defines: {
+			/** `-D annotate_source` **/
+			var ?annotateSource: Bool;
+
+			/** `-D disable_unicode_strings` **/
+			var ?disableUnicodeStrings: Bool;
+
+			/** `-D dll_export` **/
+			var ?dllExport: Bool;
+
+			/** `-D dynamic_interface_closures` **/
+			var ?dynamicInterfaceClosures: Bool;
+
+			/** `-D force_native_property` **/
+			var ?forceNativeProperty: Bool;
+
+			/** `-D hxcpp_gc_generational` **/
+			var ?hxcppGcGenerational: Bool;
+
+			/** `-D hxcpp_debugger` **/
+			var ?hxcppDebugger: Bool;
+
+			/** `-D hxcpp_smart_strings` **/
+			var ?hxcppSmartString: Bool;
+
+			/** `-D include_prefix` **/
+			var ?includePrefix: Bool;
+
+			/** `-D no-compilation` **/
+			var ?noCompilation: Bool;
+
+			/** `-D objc` **/
+			var ?objC: Bool;
+
+			/** `-D scriptable` **/
+			var ?scriptable: Bool;
+
+			/** `-D vcproj` **/
+			var ?vcproj: Bool;
+		};
+	});
 
 	/** `--lua` **/
 	Lua;
@@ -144,8 +185,29 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--php", outfile]);
 				ret;
-			case Cpp:
-				[["--cpp", outfile]];
+			case Cpp(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.annotateSource == true) ret.push(["-D", "annotate_source"]);
+						if (d.disableUnicodeStrings == true)
+							ret.push(["-D", "disable_unicode_strings"]);
+						if (d.dllExport == true) ret.push(["-D", "dll_export"]);
+						if (d.dynamicInterfaceClosures == true)
+							ret.push(["-D", "dynamic_interface_closures"]);
+						if (d.forceNativeProperty == true) ret.push(["-D", "force_native_property"]);
+						if (d.hxcppGcGenerational == true) ret.push(["-D", "hxcpp_gc_generational"]);
+						if (d.hxcppDebugger == true) ret.push(["-D", "hxcpp_debugger"]);
+						if (d.hxcppSmartString == true) ret.push(["-D", "hxcpp_smart_strings"]);
+						if (d.includePrefix == true) ret.push(["-D", "include_prefix"]);
+						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+						if (d.objC == true) ret.push(["-D", "objc"]);
+						if (d.scriptable == true) ret.push(["-D", "scriptable"]);
+						if (d.vcproj == true) ret.push(["-D", "vcproj"]);
+					});
+				});
+				ret.push(["--cpp", outfile]);
+				ret;
 			case Lua:
 				[["--lua", outfile]];
 			case CSharp(options):
