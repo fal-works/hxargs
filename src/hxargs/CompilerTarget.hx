@@ -126,6 +126,31 @@ enum CompilerTarget {
 	Java(?options: {
 		var ?libs: Array<String>;
 		var ?cArgs: Array<String>;
+		var ?defines: {
+			/** `-D fast_cast` **/
+			var ?fastCast: Bool;
+
+			/** `-D java_ver=<version>` **/
+			var ?javaVer: Int;
+
+			/** `-D jvm` **/
+			var ?jvm: Bool;
+
+			/** `-D jvm.compression-level=<level:0-9>` **/
+			var ?jvmCompressionLevel: Int;
+
+			/** `-D jvm.dynamic-level=<level:0-2>` **/
+			var ?jvmDynamicLevel: Int;
+
+			/** `-D keep_old_output` **/
+			var ?keepOldOutput: Bool;
+
+			/** `-D no-compilation` **/
+			var ?noCompilation: Bool;
+
+			/** `-D real_position` **/
+			var ?realPosition: Bool;
+		};
 	});
 
 	/** `--swf` **/
@@ -275,6 +300,18 @@ class CompilerTargetExtension {
 			case Java(options):
 				final ret = [];
 				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.fastCast == true) ret.push(["-D", "fast_cast"]);
+						d.javaVer.mayDo(x -> ret.push(["-D", 'java_ver=${x}']));
+						if (d.jvm == true) ret.push(["-D", "jvm"]);
+						d.jvmCompressionLevel.mayDo(x -> {
+							ret.push(["-D", 'jvm.compression-level=${x}']);
+						});
+						d.jvmDynamicLevel.mayDo(x -> ret.push(["-D", 'jvm.dynamic-level=${x}']));
+						if (d.keepOldOutput == true) ret.push(["-D", "keep_old_output"]);
+						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+					});
 					opt.libs.mayIter(x -> ret.push(["--java-lib", x]));
 					opt.cArgs.mayIter(x -> ret.push(["--c-arg", x]));
 				});
