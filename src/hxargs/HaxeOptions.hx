@@ -5,9 +5,9 @@ using hxargs.internal.LambdaInline;
 @:using(HaxeOptions.HaxeOptionsExtension)
 typedef HaxeOptions = {
 	/**
-		Names of conditional compilation flags.
+		Conditional compilation flags.
 	**/
-	final ?defines: Array<Define>; // std or custom
+	final ?defines: Defines;
 
 	/**
 		Other global arguments.
@@ -20,7 +20,7 @@ class HaxeOptionsExtension {
 		final args: Array<Array<String>> = [];
 
 		final defines = options.defines;
-		if (defines != null) defines.iter(def -> args.push(def.toCommandOption()));
+		if (defines != null) defines.toCommandOptions().iter(x -> args.push(x));
 
 		final globals = options.globals;
 		if (globals != null) globals.toCommandOptions().iter(x -> args.push(x));
