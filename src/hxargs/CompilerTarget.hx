@@ -11,7 +11,30 @@ using hxargs.internal.NullExtension;
 @:using(CompilerTarget.CompilerTargetExtension)
 enum CompilerTarget {
 	/** `--js` **/
-	JavaScript;
+	JavaScript(?options: {
+		var ?defines: {
+			/** `-D js_classic` **/
+			var ?classic: Bool;
+
+			/** `-D js_es=<version>` **/
+			var ?es: Int;
+
+			/** `-D js_enums_as_arrays` **/
+			var ?enumAsArrays: Bool;
+
+			/** `-D js_unflatten` **/
+			var ?unflatten: Bool;
+
+			/** `-D shallow-expose` **/
+			var ?shallowExpose: Bool;
+
+			/** `-D source-map` **/
+			var ?sourceMap: Bool;
+
+			/** `-D source-map-content` **/
+			var ?sourceMapContent: Bool;
+		};
+	});
 
 	/** `--hl` **/
 	HashLink;
@@ -229,8 +252,21 @@ class CompilerTargetExtension {
 		outfile: String
 	): Array<Array<String>> {
 		return switch target {
-			case JavaScript:
-				[["--js", outfile]];
+			case JavaScript(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.classic == true) ret.push(["-D", "js_classic"]);
+						d.es.mayDo(x -> ret.push(["-D", 'js_es=${x}']));
+						if (d.enumAsArrays == true) ret.push(["-D", "js_enums_as_arrays"]);
+						if (d.unflatten == true) ret.push(["-D", "js_unflatten"]);
+						if (d.shallowExpose == true) ret.push(["-D", "shallow-expose"]);
+						if (d.sourceMap == true) ret.push(["-D", "source-map"]);
+						if (d.sourceMapContent == true) ret.push(["-D", "source-map-content"]);
+					});
+				});
+				ret.push(["--js", outfile]);
+				ret;
 			case HashLink:
 				[["--hl", outfile]];
 			case Jvm:
