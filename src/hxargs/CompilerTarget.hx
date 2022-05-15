@@ -169,7 +169,11 @@ enum CompilerTarget {
 	});
 
 	/** `--python` **/
-	Python;
+	Python(?options: {
+		var ?defines: {
+			var ?pythonVer: String;
+		};
+	});
 
 	/** `--java` **/
 	Java(?options: {
@@ -389,8 +393,15 @@ class CompilerTargetExtension {
 				});
 				ret.push(["--cs", outfile]);
 				ret;
-			case Python:
-				[["--python", outfile]];
+			case Python(options):
+				final ret = [];
+				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						d.pythonVer.mayDo(x -> ret.push(["-D", 'python_version=${x}']));
+					});
+				});
+				ret.push(["--python", outfile]);
+				ret;
 			case Java(options):
 				final ret = [];
 				options.mayDo(opt -> {
