@@ -22,6 +22,9 @@ enum CompilerTarget {
 			/** `-D js_enums_as_arrays` **/
 			var ?enumAsArrays: Bool;
 
+			/** `-D  js-global=<name>` **/
+			var ?global: String;
+
 			/** `-D js_unflatten` **/
 			var ?unflatten: Bool;
 
@@ -79,6 +82,9 @@ enum CompilerTarget {
 			/** `-D dynamic_interface_closures` **/
 			var ?dynamicInterfaceClosures: Bool;
 
+			/** `-D file-extension=<ext>` **/
+			var ?fileExtension: String;
+
 			/** `-D force_native_property` **/
 			var ?forceNativeProperty: Bool;
 
@@ -96,6 +102,9 @@ enum CompilerTarget {
 
 			/** `-D no-compilation` **/
 			var ?noCompilation: Bool;
+
+			/** `-D no-debug` **/
+			var ?noDebug: Bool;
 
 			/** `-D objc` **/
 			var ?objC: Bool;
@@ -163,6 +172,9 @@ enum CompilerTarget {
 			/** `-D real_position` **/
 			var ?realPosition: Bool;
 
+			/** `-D  std-encoding-utf8` **/
+			var ?stdEncodingUtf8: Bool;
+
 			/** `-D unsafe` **/
 			var ?unsafe: Bool;
 		};
@@ -171,7 +183,11 @@ enum CompilerTarget {
 	/** `--python` **/
 	Python(?options: {
 		var ?defines: {
+			/** `-D python-version=<version>` **/
 			var ?pythonVer: String;
+
+			/** `-D std-encoding-utf8` **/
+			var ?stdEncodingUtf8: Bool;
 		};
 	});
 
@@ -203,6 +219,9 @@ enum CompilerTarget {
 
 			/** `-D real_position` **/
 			var ?realPosition: Bool;
+
+			/** `-D std-encoding-utf8` **/
+			var ?stdEncodingUtf8: Bool;
 		};
 	});
 
@@ -300,6 +319,7 @@ class CompilerTargetExtension {
 						if (d.classic == true) ret.push(["-D", "js_classic"]);
 						d.es.mayDo(x -> ret.push(["-D", 'js_es=${x}']));
 						if (d.enumAsArrays == true) ret.push(["-D", "js_enums_as_arrays"]);
+						d.global.mayDo(x -> ret.push(["-D", 'js_global=${x}']));
 						if (d.unflatten == true) ret.push(["-D", "js_unflatten"]);
 						if (d.shallowExpose == true) ret.push(["-D", "shallow-expose"]);
 						if (d.sourceMap == true) ret.push(["-D", "source-map"]);
@@ -343,12 +363,14 @@ class CompilerTargetExtension {
 						if (d.dllExport == true) ret.push(["-D", "dll_export"]);
 						if (d.dynamicInterfaceClosures == true)
 							ret.push(["-D", "dynamic_interface_closures"]);
+						d.fileExtension.mayDo(x -> ret.push(["-D", 'file-extension=${x}']));
 						if (d.forceNativeProperty == true) ret.push(["-D", "force_native_property"]);
 						if (d.hxcppGcGenerational == true) ret.push(["-D", "hxcpp_gc_generational"]);
 						if (d.hxcppDebugger == true) ret.push(["-D", "hxcpp_debugger"]);
 						if (d.hxcppSmartString == true) ret.push(["-D", "hxcpp_smart_strings"]);
 						if (d.includePrefix == true) ret.push(["-D", "include_prefix"]);
 						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
+						if (d.noDebug == true) ret.push(["-D", "no-debug"]);
 						if (d.objC == true) ret.push(["-D", "objc"]);
 					});
 				});
@@ -381,6 +403,7 @@ class CompilerTargetExtension {
 						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
 						if (d.noRoot == true) ret.push(["-D", "no_root"]);
 						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
 						if (d.unsafe == true) ret.push(["-D", "unsafe"]);
 					});
 					opt.net.mayDo(net -> {
@@ -398,6 +421,7 @@ class CompilerTargetExtension {
 				options.mayDo(opt -> {
 					opt.defines.mayDo(d -> {
 						d.pythonVer.mayDo(x -> ret.push(["-D", 'python_version=${x}']));
+						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
 					});
 				});
 				ret.push(["--python", outfile]);
@@ -416,6 +440,7 @@ class CompilerTargetExtension {
 						if (d.keepOldOutput == true) ret.push(["-D", "keep_old_output"]);
 						if (d.noCompilation == true) ret.push(["-D", "no-compilation"]);
 						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+						if (d.stdEncodingUtf8 == true) ret.push(["-D", "std-encoding-utf8"]);
 					});
 					opt.libs.mayIter(x -> ret.push(["--java-lib", x]));
 					opt.cArgs.mayIter(x -> ret.push(["--c-arg", x]));
