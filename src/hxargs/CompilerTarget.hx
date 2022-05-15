@@ -47,6 +47,13 @@ enum CompilerTarget {
 		var ?front: String;
 		var ?lib: String;
 		var ?prefix: String;
+		var ?defines: {
+			/** `-D source-map` **/
+			var ?sourceMap: Bool;
+
+			/** `-D real_position` **/
+			var ?realPosition: Bool;
+		};
 	});
 
 	/** `--cpp` **/
@@ -274,6 +281,10 @@ class CompilerTargetExtension {
 			case Php(options):
 				final ret = [];
 				options.mayDo(opt -> {
+					opt.defines.mayDo(d -> {
+						if (d.sourceMap == true) ret.push(["-D", "source-map"]);
+						if (d.realPosition == true) ret.push(["-D", "real_position"]);
+					});
 					opt.front.mayDo(x -> ret.push(["-D", 'php-front=${x}']));
 					opt.lib.mayDo(x -> ret.push(["-D", 'php-lib=${x}']));
 					opt.prefix.mayDo(x -> ret.push(["-D", 'php-prefix=${x}']));
