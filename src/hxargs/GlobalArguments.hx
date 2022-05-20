@@ -1,5 +1,7 @@
 package hxargs;
 
+using hxargs.InitializationMacros;
+using hxargs.internal.LambdaInline;
 using hxargs.internal.NullExtension;
 
 // TODO: merge()
@@ -21,6 +23,7 @@ typedef GlobalArguments = {
 	}>;
 	var ?prompt: Bool;
 	var ?commands: Array<String>;
+	var ?macros: InitializationMacros;
 	var ?noTraces: Bool;
 	var ?times: Bool;
 	var ?noInline: Bool;
@@ -29,12 +32,15 @@ typedef GlobalArguments = {
 		var pkg: String;
 		var target: String;
 	}>;
-	var ?macros: Array<String>; // TODO: standard macros
 	var ?connect: {
 		var ?host: String;
 		var port: Int;
 	};
 	var ?cwd: String;
+
+	/**
+		Any command-line options that start with `-` or `--`.
+	**/
 	var ?customs: Array<String>;
 }
 
@@ -56,13 +62,13 @@ class GlobalArgumentsExtension {
 			res.name.mapOr(res.file, name -> '${res.file}@${name}')
 		]));
 		if (args.prompt == true) add(["--prompt"]);
+		args.macros.mayDo(macros -> macros.toCommandOptions().iter(x -> add(x)));
 		args.commands.mayIter(command -> add(["--cmd", command]));
 		if (args.noTraces == true) add(["--no-traces"]);
 		if (args.times == true) add(["--times"]);
 		if (args.noInline == true) add(["--no-inline"]);
 		if (args.noOpt == true) add(["--no-opt"]);
 		args.remaps.mayIter(remap -> add(["--remap", '${remap.pkg}:${remap.target}']));
-		args.macros.mayIter(expr -> add(["--macro", expr]));
 		args.connect.mayDo(connect -> add([
 			"--connect",
 			connect.host.mapOr('${connect.port}', host -> '${host}:${connect.port}')
