@@ -13,29 +13,58 @@ using hxargs.internal.NullExtension;
 **/
 @:using(GlobalArguments.GlobalArgumentsExtension)
 typedef GlobalArguments = {
+	/** `--xml` **/
 	var ?xml: String;
+
+	/** `-v` / `--verbose` **/
 	var ?verbose: Bool;
+
+	/** `--dce <std|full|no>` **/
 	var ?dce: DceValue;
+
+	/** `--debug` **/
 	var ?debug: Bool;
+
+	/** `-r <file>[@name]` / `--resource <file>[@name]` **/
 	var ?resources: Array<{
 		var file: String;
 		var ?name: String;
 	}>;
+
+	/** `--prompt` **/
 	var ?prompt: Bool;
+
+	/** `--cmd <command>` **/
 	var ?commands: Array<String>;
+
+	/** `--macro <expr>` **/
 	var ?macros: InitializationMacros;
+
+	/** `--no-traces` **/
 	var ?noTraces: Bool;
+
+	/** `--times` **/
 	var ?times: Bool;
+
+	/** `--no-inline` **/
 	var ?noInline: Bool;
+
+	/** `--no-opt` **/
 	var ?noOpt: Bool;
+
+	/** `--remap <package:target>` **/
 	var ?remaps: Array<{
 		var pkg: String;
 		var target: String;
 	}>;
+
+	/** `--connect <host:port>` **/
 	var ?connect: {
 		var ?host: String;
 		var port: Int;
 	};
+
+	/** `--cwd <dir>` **/
 	var ?cwd: String;
 
 	/**
