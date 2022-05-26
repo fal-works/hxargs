@@ -79,7 +79,6 @@ class ModeExtension {
 								runArgs.mayIter(s -> args.push([s]));
 							}
 						);
-					case Macro:
 					case Display(file, position, displayMode):
 						args.push(["--interp"]); // how about --run ?
 						var displayArg = '$file@$position';
@@ -138,11 +137,6 @@ enum InterpreterMode {
 		@param args Command line arguments that will always be passed.
 	**/
 	RunWithArguments(?args: Array<String>);
-
-	/**
-		Just interpret. Used for just invoking the macro.
-	**/
-	Macro;
 
 	/**
 		Outputs completion information.

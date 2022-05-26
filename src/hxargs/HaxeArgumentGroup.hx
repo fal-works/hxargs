@@ -1,5 +1,6 @@
 package hxargs;
 
+using hxargs.InitializationMacros;
 using hxargs.internal.LambdaInline;
 using hxargs.internal.NullExtension;
 
@@ -14,17 +15,27 @@ typedef HaxeArgumentGroup = {
 	/**
 		Input data to be passed to the Haxe compiler.
 	**/
-	final input: HaxeInput;
+	var ?input: HaxeInput;
 
 	/**
 		Options to be passed to the Haxe compiler.
 	**/
-	final options: HaxeOptions;
+	var ?options: HaxeOptions;
+
+	/**
+		List of `--cmd <command>` arguments.
+	**/
+	var ?commands: Array<String>;
+
+	/**
+		Lists of `--macro <expr>` arguments.
+	**/
+	var ?macros: InitializationMacros;
 
 	/**
 		Either `Interpret` or `Compile`.
 	**/
-	final mode: Mode;
+	var ?mode: Mode;
 }
 
 class HaxeArgumentGroupExtension {
@@ -36,11 +47,22 @@ class HaxeArgumentGroupExtension {
 	): Array<Array<String>> {
 		final args: Array<Array<String>> = [];
 
-		arguments.input.toCommandArguments().iter(args.push);
+		// TODO: remove type hints
 
-		arguments.options.toCommandArguments().iter(args.push);
+		arguments.input.mayDo((
+			input: HaxeInput
+		) -> input.toCommandArguments().iter(args.push));
 
-		arguments.mode.toCommandArguments().iter(args.push); // This must be the last
+		arguments.options.mayDo((
+			options: HaxeOptions
+		) -> options.toCommandArguments().iter(args.push));
+
+		arguments.macros.mayDo(macros -> macros.toCommandOptions().iter(x -> args.push(x)));
+
+		arguments.commands.mayIter(command -> args.push(["--cmd", command]));
+
+		arguments.mode.mayDo(mode -> mode.toCommandArguments()
+			.iter(args.push)); // This must be the last
 
 		return args;
 	}

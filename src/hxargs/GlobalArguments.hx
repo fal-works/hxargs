@@ -34,12 +34,6 @@ typedef GlobalArguments = {
 	/** `--prompt` **/
 	var ?prompt: Bool;
 
-	/** `--cmd <command>` **/
-	var ?commands: Array<String>;
-
-	/** `--macro <expr>` **/
-	var ?macros: InitializationMacros;
-
 	/** `--no-traces` **/
 	var ?noTraces: Bool;
 
@@ -91,8 +85,6 @@ class GlobalArgumentsExtension {
 			res.name.mapOr(res.file, name -> '${res.file}@${name}')
 		]));
 		if (args.prompt == true) add(["--prompt"]);
-		args.macros.mayDo(macros -> macros.toCommandOptions().iter(x -> add(x)));
-		args.commands.mayIter(command -> add(["--cmd", command]));
 		if (args.noTraces == true) add(["--no-traces"]);
 		if (args.times == true) add(["--times"]);
 		if (args.noInline == true) add(["--no-inline"]);
