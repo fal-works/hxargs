@@ -4,13 +4,13 @@ using hxargs.internal.LambdaInline;
 using hxargs.internal.NullExtension;
 
 /**
-	Object representing Haxe arguments.
+	A full set of Haxe arguments.
 
 	@see https://haxe.org/manual/compiler-usage.html
 **/
 @:using(hxargs.HxArgs)
-@:using(HaxeArguments.HaxeArgumentsExtension)
-typedef HaxeArguments = {
+@:using(HaxeArgumentGroup.HaxeArgumentGroupExtension)
+typedef HaxeArgumentGroup = {
 	/**
 		Input data to be passed to the Haxe compiler.
 	**/
@@ -27,11 +27,13 @@ typedef HaxeArguments = {
 	final mode: Mode;
 }
 
-class HaxeArgumentsExtension {
+class HaxeArgumentGroupExtension {
 	/**
-		Converts `HaxeArguments` to `Array<String>` that can be passed to `haxe` command.
+		Converts `HaxeArgumentGroup` to `Array<String>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandArguments(arguments: HaxeArguments): Array<Array<String>> {
+	public static function toCommandArguments(
+		arguments: HaxeArgumentGroup
+	): Array<Array<String>> {
 		final args: Array<Array<String>> = [];
 
 		arguments.input.toCommandArguments().iter(args.push);
