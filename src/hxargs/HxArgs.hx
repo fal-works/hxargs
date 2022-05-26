@@ -7,8 +7,8 @@ class HxArgs {
 		Just for type inference of `HaxeArguments`.
 	**/
 	@:noUsing
-	public static function args(arguments: HaxeArguments): HaxeArguments {
-		// Avoid inline. See: https://github.com/HaxeFoundation/haxe/issues/10693
+	public static inline function args(arguments: HaxeArguments): HaxeArguments {
+		// type hint is required. See: https://github.com/HaxeFoundation/haxe/issues/10693
 		return (arguments : HaxeArguments);
 	}
 
