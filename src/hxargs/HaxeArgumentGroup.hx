@@ -36,34 +36,34 @@ typedef HaxeArgumentGroup = {
 
 class HaxeArgumentGroupExtension {
 	/**
-		Converts `HaxeArgumentGroup` to `Array<Argument>` that can be passed to `haxe` command.
+		Converts `HaxeArgumentGroup` to `Array<Array<Argument>>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandArguments(
+	public static function toCommandArgumentSections(
 		arguments: HaxeArgumentGroup
-	): Array<Argument> {
-		final args: Array<Argument> = [];
+	): Array<Array<Argument>> {
+		final sections: Array<Array<Argument>> = [];
 
 		maybe(arguments.input).mayDo(input -> {
-			input.toCommandArguments().iter(args.push);
+			input.toCommandArguments().ifNonEmpty(x -> sections.push(x));
 		});
 
 		maybe(arguments.options).mayDo(options -> {
-			options.toCommandArguments().iter(args.push);
+			options.toCommandArguments().ifNonEmpty(x -> sections.push(x));
 		});
 
 		maybe(arguments.macros).mayDo(macros -> {
-			macros.toCommandOptions().iter(x -> args.push(x));
+			macros.toCommandOptions().ifNonEmpty(x -> sections.push(x));
 		});
 
 		maybe(arguments.commands).mayDo(commands -> {
-			commands.iter(command -> args.push(["--cmd", command]));
+			commands.ifNonEmpty(x -> sections.push(x.map(s -> ["--cmd", s])));
 		});
 
 		// This must be the last
 		maybe(arguments.mode).mayDo(mode -> {
-			mode.toCommandArguments().iter(args.push);
+			mode.toCommandArguments().ifNonEmpty(x -> sections.push(x));
 		});
 
-		return args;
+		return sections;
 	}
 }
