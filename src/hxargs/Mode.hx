@@ -89,6 +89,22 @@ class ModeExtension {
 
 		return args;
 	}
+
+	/**
+		Returns `true` if this mode has its own arguments (i.e. corresponds to a `--run` argument).
+	**/
+	public static function hasOwnArguments(mode: Mode): Bool {
+		return switch mode {
+			case Compile(_, _):
+				false;
+			case Interpret(interpreterMode, _):
+				switch interpreterMode {
+					case Run: false;
+					case RunWithArguments(_): true;
+					case Display(_, _, _): false;
+				}
+		};
+	}
 }
 
 enum CompilerMode {
