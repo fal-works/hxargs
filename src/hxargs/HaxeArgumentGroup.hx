@@ -1,5 +1,7 @@
 package hxargs;
 
+using hxargs.HaxeInput;
+using hxargs.HaxeOptions;
 using hxargs.InitializationMacros;
 using hxargs.internal.LambdaInline;
 using hxargs.internal.NullExtension;
@@ -47,22 +49,16 @@ class HaxeArgumentGroupExtension {
 	): Array<Array<String>> {
 		final args: Array<Array<String>> = [];
 
-		// TODO: remove type hints
+		arguments.input.mayDo(input -> input.toCommandArguments().iter(args.push));
 
-		arguments.input.mayDo((
-			input: HaxeInput
-		) -> input.toCommandArguments().iter(args.push));
-
-		arguments.options.mayDo((
-			options: HaxeOptions
-		) -> options.toCommandArguments().iter(args.push));
+		arguments.options.mayDo(options -> options.toCommandArguments().iter(args.push));
 
 		arguments.macros.mayDo(macros -> macros.toCommandOptions().iter(x -> args.push(x)));
 
 		arguments.commands.mayIter(command -> args.push(["--cmd", command]));
 
-		arguments.mode.mayDo(mode -> mode.toCommandArguments()
-			.iter(args.push)); // This must be the last
+		// This must be the last
+		arguments.mode.mayDo(mode -> mode.toCommandArguments().iter(args.push));
 
 		return args;
 	}
