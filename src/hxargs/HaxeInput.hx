@@ -2,7 +2,7 @@ package hxargs;
 
 import hxargs.internal.Result;
 
-using hxargs.internal.NullExtension;
+using hxargs.internal.LambdaInline;
 
 @:using(HaxeInput.HaxeInputExtension)
 typedef HaxeInput = {
@@ -42,7 +42,7 @@ class HaxeInputExtension {
 	**/
 	public static function validate(input: HaxeInput): Result<HaxeInput> {
 		return if (input.main != null || {
-			input.entryPoints.mapOr(false, x -> x.length > 0);
+			maybe(input.entryPoints).mapOr(false, x -> x.length > 0);
 		}) Ok(input) else Failed("No entry point specified.");
 	}
 
@@ -52,10 +52,10 @@ class HaxeInputExtension {
 	public static function toCommandArguments(input: HaxeInput): Array<Array<String>> {
 		final args: Array<Array<String>> = [];
 
-		input.classPaths.mayIter(path -> args.push(["-p", path]));
-		input.libraries.mayIter(name -> args.push(["-lib", name]));
-		input.main.mayDo(path -> args.push(["-m", path]));
-		input.entryPoints.mayIter(path -> args.push([path]));
+		maybe(input.classPaths).mayDo(a -> a.iter(path -> args.push(["-p", path])));
+		maybe(input.libraries).mayDo(a -> a.iter(name -> args.push(["-lib", name])));
+		maybe(input.main).mayDo(path -> args.push(["-m", path]));
+		maybe(input.entryPoints).mayDo(a -> a.iter(path -> args.push([path])));
 
 		return args;
 	}

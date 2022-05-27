@@ -2,7 +2,7 @@ package hxargs;
 
 import haxe.extern.EitherType;
 
-using hxargs.internal.NullExtension;
+using hxargs.internal.LambdaInline;
 
 /**
 	Collection of `-D` arguments that are not dependent on a specific target.
@@ -78,27 +78,27 @@ class DefinesExtension {
 	public static function toCommandOptions(defines: Defines): Array<Array<String>> {
 		final list: Array<String> = [];
 
-		defines.builtin.mayDo(d -> {
+		maybe(defines.builtin).mayDo(d -> {
 			if (d.absolutePath == true) list.push("absolute_path");
 			if (d.checkXmlProxy == true) list.push("check_xml_proxy");
 			if (d.dceDebug == true) list.push("dce-debug");
-			d.dump.mayDo(x -> list.push('dump=${x}'));
+			maybe(d.dump).mayDo(x -> list.push('dump=${x}'));
 			if (d.dumpDependencies == true) list.push("dump-dependencies");
 			if (d.dumpIgnoreVarIds == true) list.push("dump-ignore-var-ids");
-			d.dumpPath.mayDo(x -> list.push('dump-path=${x}'));
+			maybe(d.dumpPath).mayDo(x -> list.push('dump-path=${x}'));
 			if (d.filterTimes == true) list.push("filter-times");
 			if (d.keepInlinePositions == true) list.push("keep-inline-positions");
-			d.loopUnrollMaxCost.mayDo(x -> list.push('loop-unroll-max-cost=${x}'));
+			maybe(d.loopUnrollMaxCost).mayDo(x -> list.push('loop-unroll-max-cost=${x}'));
 			if (d.macroTimes == true) list.push("macro-times");
 			if (d.noDeprecationWarnings == true) list.push("no-deprecation-warnings");
 			if (d.noMacroCache == true) list.push("no-macro-cache");
 			if (d.noTre == true) list.push("no-tre");
 			if (d.oldErrorFormat == true) list.push("old-error-format");
-			d.sourceHeader.mayDo(x -> list.push('source-header=${x}'));
+			maybe(d.sourceHeader).mayDo(x -> list.push('source-header=${x}'));
 			if (d.warnVarShadowing == true) list.push("warn-var-shadowing");
 		});
 
-		defines.custom.mayIter(d -> list.push(d.toString()));
+		maybe(defines.custom).mayDo(x -> x.iter(d -> list.push(d.toString())));
 
 		return list.map(x -> ["-D", x]);
 	}

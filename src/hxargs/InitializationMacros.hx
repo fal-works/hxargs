@@ -1,6 +1,6 @@
 package hxargs;
 
-using hxargs.internal.NullExtension;
+using hxargs.internal.LambdaInline;
 
 /**
 	Collection of initialization macros to be applied before typing.
@@ -29,8 +29,8 @@ class InitializationMacrosExtension {
 	): Array<Array<String>> {
 		final ret = [];
 
-		macros.builtin.mayIter(x -> ret.push(x.toCommandOption()));
-		macros.custom.mayIter(x -> ["--macro", x]);
+		maybe(macros.builtin).mayDo(a -> a.iter(x -> ret.push(x.toCommandOption())));
+		maybe(macros.custom).mayDo(a -> a.iter(x -> ["--macro", x]));
 
 		return ret;
 	}

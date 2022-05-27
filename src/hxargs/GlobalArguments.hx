@@ -1,8 +1,6 @@
 package hxargs;
 
-using hxargs.InitializationMacros;
 using hxargs.internal.LambdaInline;
-using hxargs.internal.NullExtension;
 
 // TODO: merge()
 
@@ -76,26 +74,31 @@ class GlobalArgumentsExtension {
 		inline function add(option: Array<String>): Void
 			options.push(option);
 
-		args.xml.mayDo(file -> add(["--xml", file]));
+		maybe(args.xml).mayDo(file -> add(["--xml", file]));
 		if (args.debug == true) add(["--debug"]);
 		if (args.verbose == true) add(["-v"]);
-		args.dce.mayDo(value -> add(["--dce", value]));
-		args.resources.mayIter(res -> add([
+		maybe(args.dce).mayDo(value -> add(["--dce", value]));
+		maybe(args.resources).mayDo(a -> a.iter(res -> add([
 			"-r",
-			res.name.mapOr(res.file, name -> '${res.file}@${name}')
-		]));
+			maybe(res.name).mapOr(res.file, name -> '${res.file}@${name}')
+		])));
 		if (args.prompt == true) add(["--prompt"]);
 		if (args.noTraces == true) add(["--no-traces"]);
 		if (args.times == true) add(["--times"]);
 		if (args.noInline == true) add(["--no-inline"]);
 		if (args.noOpt == true) add(["--no-opt"]);
-		args.remaps.mayIter(remap -> add(["--remap", '${remap.pkg}:${remap.target}']));
-		args.connect.mayDo(connect -> add([
+		maybe(args.remaps).mayDo(a -> {
+			a.iter(remap -> add(["--remap", '${remap.pkg}:${remap.target}']));
+		});
+		maybe(args.connect).mayDo(connect -> add([
 			"--connect",
-			connect.host.mapOr('${connect.port}', host -> '${host}:${connect.port}')
+			maybe(connect.host).mapOr(
+				'${connect.port}',
+				host -> '${host}:${connect.port}'
+			)
 		]));
-		args.cwd.mayDo(dir -> add(["--cwd", dir]));
-		args.customs.mayIter(x -> add([x]));
+		maybe(args.cwd).mayDo(dir -> add(["--cwd", dir]));
+		maybe(args.customs).mayDo(a -> a.iter(x -> add([x])));
 
 		return options;
 	}

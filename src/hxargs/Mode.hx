@@ -1,7 +1,6 @@
 package hxargs;
 
 using hxargs.internal.LambdaInline;
-using hxargs.internal.NullExtension;
 
 @:using(Mode.ModeExtension)
 enum Mode {
@@ -41,7 +40,7 @@ class ModeExtension {
 						outfile = path;
 					case BuildAndRun(path, run):
 						outfile = path;
-						run.coalesceWith(() -> target.defaultRunCommand())
+						maybe(run).coalesceWith(() -> target.defaultRunCommand())
 							.mayDo(getCommand -> options.push(["--cmd"].concat(getCommand(path))));
 					case NoOutput:
 						outfile = "_";
@@ -56,10 +55,12 @@ class ModeExtension {
 				options.iter(x -> args.push(x));
 
 			case Interpret(interpreterMode, options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
-						d.callStackDepth.mayDo(x -> args.push(["-D", 'eval-call-stack-depth=${x}']));
-						d.debugger.mayDo(x -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
+						maybe(d.callStackDepth).mayDo(x -> {
+							args.push(["-D", 'eval-call-stack-depth=${x}']);
+						});
+						maybe(d.debugger).mayDo(x -> {
 							final hasValue = Std.isOfType(x, Int) || Std.isOfType(x, String);
 							if (hasValue) args.push(["-D", 'eval-debugger=${x}']);
 							else if (x != false) args.push(["-D", "eval-debugger"]);
@@ -72,11 +73,11 @@ class ModeExtension {
 					case Run:
 						args.push(["--interp"]);
 					case RunWithArguments(runArgs):
-						main.doOrElse(
+						maybe(main).doOrElse(
 							() -> throw new HxArgsError("Missing main module."),
 							m -> {
 								args.push(["--run", m]);
-								runArgs.mayIter(s -> args.push([s]));
+								maybe(runArgs).mayDo(a -> a.iter(s -> args.push([s])));
 							}
 						);
 					case Display(file, position, displayMode):

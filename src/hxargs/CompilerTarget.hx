@@ -1,7 +1,6 @@
 package hxargs;
 
 using hxargs.internal.LambdaInline;
-using hxargs.internal.NullExtension;
 
 /**
 	Haxe compiler target with some options (if available).
@@ -323,19 +322,19 @@ class CompilerTargetExtension {
 		final args: Array<Array<String>> = [];
 		inline function optFlag(input: Null<Bool>, optionName: String): Void
 			if (input == true) args.push([optionName]);
-		inline function optVal<T>(input: Null<T>, optionName: String): Void
+		inline function optVal<T>(input: Maybe<T>, optionName: String): Void
 			input.mayDo(x -> args.push([optionName, Std.string(x)]));
-		inline function optVals<T>(input: Null<Array<T>>, optionName: String): Void
-			input.mayIter(x -> args.push([optionName, Std.string(x)]));
-		inline function dFlag(input: Null<Bool>, name: String): Void
+		inline function optVals<T>(input: Maybe<Array<T>>, optionName: String): Void
+			input.mayDo(x -> x.iter(x -> args.push([optionName, Std.string(x)])));
+		inline function dFlag(input: Maybe<Bool>, name: String): Void
 			if (input == true) args.push(["-D", name]);
-		inline function dVal<T>(input: Null<T>, name: String): Void
+		inline function dVal<T>(input: Maybe<T>, name: String): Void
 			input.mayDo(x -> args.push(["-D", '${name}=${Std.string(x)}']));
 
 		switch target {
 			case JavaScript(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.classic, "js_classic");
 						dVal(d.es, "js_es");
 						dFlag(d.enumAsArrays, "js_enums_as_arrays");
@@ -349,8 +348,8 @@ class CompilerTargetExtension {
 				args.push(["--js", outfile]);
 
 			case HashLink(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dVal(d.hlVer, "hl-ver");
 						dFlag(d.noCompilation, "no-compilation");
 					});
@@ -360,8 +359,8 @@ class CompilerTargetExtension {
 			case Jvm:
 				[["--jvm", outfile]];
 			case Php(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dVal(d.front, "php-front");
 						dVal(d.lib, "php-lib");
 						dVal(d.prefix, "php-prefix");
@@ -372,8 +371,8 @@ class CompilerTargetExtension {
 				args.push(["--php", outfile]);
 
 			case Cpp(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.annotateSource, "annotate_source");
 						dFlag(d.disableUnicodeStrings, "disable_unicode_strings");
 						dFlag(d.dllExport, "dll_export");
@@ -392,8 +391,8 @@ class CompilerTargetExtension {
 				args.push(["--cpp", outfile]);
 
 			case Lua(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.jit, "lua_jit");
 						dFlag(d.vanilla, "lua_vanilla");
 						dVal(d.luaVer, "lua_ver");
@@ -402,8 +401,8 @@ class CompilerTargetExtension {
 				args.push(["--lua", outfile]);
 
 			case CSharp(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.coreApiSerialize, "core_api_serialize");
 						dVal(d.csVer, "cs_ver");
 						dFlag(d.dllImport, "dll_import");
@@ -419,10 +418,10 @@ class CompilerTargetExtension {
 						dFlag(d.stdEncodingUtf8, "std-encoding-utf8");
 						dFlag(d.unsafe, "unsafe");
 					});
-					opt.net.mayDo(net -> {
-						net.libs.mayIter(e -> {
+					maybe(opt.net).mayDo(net -> {
+						maybe(net.libs).mayDo(x -> x.iter(e -> {
 							args.push(["--net-lib", if (e.std == true) '${e.file}@std' else e.file]);
-						});
+						}));
 						optVals(net.stds, "--net-std");
 					});
 					optVals(opt.cArgs, "--c-arg");
@@ -430,8 +429,8 @@ class CompilerTargetExtension {
 				args.push(["--cs", outfile]);
 
 			case Python(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dVal(d.pythonVer, "python_version");
 						dFlag(d.stdEncodingUtf8, "std-encoding-utf8");
 					});
@@ -439,8 +438,8 @@ class CompilerTargetExtension {
 				args.push(["--python", outfile]);
 
 			case Java(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.fastCast, "fast_cast");
 						dVal(d.javaVer, "java_ver");
 						dFlag(d.jvm, "jvm");
@@ -457,8 +456,8 @@ class CompilerTargetExtension {
 				args.push(["--java", outfile]);
 
 			case Flash(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.advancedTelemetry, "advanced-telemetry");
 						dFlag(d.fdb, "fdb");
 						dFlag(d.useStage, "flash_use_tage");
@@ -477,7 +476,7 @@ class CompilerTargetExtension {
 						dVal(d.swfScriptTimeout, "swf_script_timeout");
 						dFlag(d.swfUseDoAbc, "swf_use_doabc");
 					});
-					opt.swf.mayDo(swf -> {
+					maybe(opt.swf).mayDo(swf -> {
 						optVal(swf.version, "--swf-version");
 						optVal(swf.header, "--swf-header");
 						optVals(swf.libs, "--swf-lib");
@@ -488,8 +487,8 @@ class CompilerTargetExtension {
 				args.push(["--swf", outfile]);
 
 			case Neko(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.nekoSource, "neko_source");
 						dFlag(d.nekoV1, "neko_v1");
 						dFlag(d.useNekoc, "use_nekoc");
@@ -498,8 +497,8 @@ class CompilerTargetExtension {
 				args.push(["--neko", outfile]);
 
 			case Cppia(options):
-				options.mayDo(opt -> {
-					opt.defines.mayDo(d -> {
+				maybe(options).mayDo(opt -> {
+					maybe(opt.defines).mayDo(d -> {
 						dFlag(d.noCppiaAst, "nocppiaast");
 					});
 				});
