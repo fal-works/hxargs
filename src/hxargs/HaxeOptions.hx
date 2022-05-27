@@ -14,8 +14,8 @@ typedef HaxeOptions = {
 }
 
 class HaxeOptionsExtension {
-	public static function toCommandArguments(options: HaxeOptions): Array<Array<String>> {
-		final args: Array<Array<String>> = [];
+	public static function toCommandArguments(options: HaxeOptions): Array<Argument> {
+		final args: Array<Argument> = [];
 
 		maybe(options.defines).mayDo(defines -> {
 			defines.toCommandOptions().iter(x -> args.push(x));

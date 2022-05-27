@@ -71,9 +71,9 @@ typedef Defines = {
 
 class DefinesExtension {
 	/**
-		Converts `Defines` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `Defines` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandOptions(defines: Defines): Array<Array<String>> {
+	public static function toCommandOptions(defines: Defines): Array<Argument> {
 		final list: Array<String> = [];
 
 		maybe(defines.builtin).mayDo(d -> {

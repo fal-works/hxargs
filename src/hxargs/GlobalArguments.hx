@@ -60,16 +60,16 @@ typedef GlobalArguments = {
 	/**
 		Any command-line options that start with `-` or `--`.
 	**/
-	var ?customs: Array<String>;
+	var ?customs: Array<Argument>;
 }
 
 class GlobalArgumentsExtension {
 	/**
-		Converts `GlobalArgument` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `GlobalArgument` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandOptions(args: GlobalArguments): Array<Array<String>> {
-		final options: Array<Array<String>> = [];
-		inline function add(option: Array<String>): Void
+	public static function toCommandOptions(args: GlobalArguments): Array<Argument> {
+		final options: Array<Argument> = [];
+		inline function add(option: Argument): Void
 			options.push(option);
 
 		maybe(args.xml).mayDo(file -> add(["--xml", file]));
@@ -96,7 +96,7 @@ class GlobalArgumentsExtension {
 			)
 		]));
 		maybe(args.cwd).mayDo(dir -> add(["--cwd", dir]));
-		maybe(args.customs).mayDo(a -> a.iter(x -> add([x])));
+		maybe(args.customs).mayDo(a -> a.iter(x -> add(x)));
 
 		return options;
 	}

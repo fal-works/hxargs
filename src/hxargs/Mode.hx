@@ -24,17 +24,17 @@ enum Mode {
 
 class ModeExtension {
 	/**
-		Converts `Mode` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `Mode` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
 	public static function toCommandArguments(
 		mode: Mode,
 		?main: String
-	): Array<Array<String>> {
-		final args: Array<Array<String>> = [];
+	): Array<Argument> {
+		final args: Array<Argument> = [];
 		switch mode {
 			case Compile(compilerMode, target):
 				var outfile: String;
-				final options: Array<Array<String>> = [];
+				final options: Array<Argument> = [];
 				switch compilerMode {
 					case Build(path):
 						outfile = path;

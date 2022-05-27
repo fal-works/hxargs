@@ -14,7 +14,8 @@ class HxArgs {
 		Invokes `haxe` command.
 	**/
 	public static function exec(arguments: HaxeArgumentGroup, printCommand = false): Void {
-		final args = arguments.toCommandArguments().flatten();
+		final argList: Array<Array<String>> = arguments.toCommandArguments();
+		final args = argList.flatten();
 		if (printCommand) Sys.println('haxe ${args.join(" ")}');
 		Sys.command("haxe", args);
 	}

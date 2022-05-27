@@ -22,11 +22,11 @@ typedef InitializationMacros = {
 
 class InitializationMacrosExtension {
 	/**
-		Converts `InitializationMacros` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `InitializationMacros` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
 	public static function toCommandOptions(
 		macros: InitializationMacros
-	): Array<Array<String>> {
+	): Array<Argument> {
 		final ret = [];
 
 		maybe(macros.builtin).mayDo(a -> a.iter(x -> ret.push(x.toCommandOption())));

@@ -63,7 +63,7 @@ enum BuiltinInitializationMacro {
 class BuiltinInitializationMacroExtension {
 	public static function toCommandOption(
 		mcr: BuiltinInitializationMacro
-	): Array<String> {
+	): Argument {
 		return ["--macro", toString(mcr)];
 	}
 

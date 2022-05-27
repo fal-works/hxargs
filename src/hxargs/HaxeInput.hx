@@ -45,10 +45,10 @@ class HaxeInputExtension {
 	}
 
 	/**
-		Converts `HaxeInput` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `HaxeInput` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandArguments(input: HaxeInput): Array<Array<String>> {
-		final args: Array<Array<String>> = [];
+	public static function toCommandArguments(input: HaxeInput): Array<Argument> {
+		final args: Array<Argument> = [];
 
 		maybe(input.classPaths).mayDo(a -> a.iter(path -> args.push(["-p", path])));
 		maybe(input.libraries).mayDo(a -> a.iter(name -> args.push(["-lib", name])));

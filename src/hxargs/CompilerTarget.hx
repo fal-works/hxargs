@@ -316,8 +316,8 @@ class CompilerTargetExtension {
 	public static function toCommandArguments(
 		target: CompilerTarget,
 		outfile: String
-	): Array<Array<String>> {
-		final args: Array<Array<String>> = [];
+	): Array<Argument> {
+		final args: Array<Argument> = [];
 		inline function optFlag(input: Null<Bool>, optionName: String): Void
 			if (input == true) args.push([optionName]);
 		inline function optVal<T>(input: Maybe<T>, optionName: String): Void

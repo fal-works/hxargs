@@ -36,12 +36,12 @@ typedef HaxeArgumentGroup = {
 
 class HaxeArgumentGroupExtension {
 	/**
-		Converts `HaxeArgumentGroup` to `Array<Array<String>>` that can be passed to `haxe` command.
+		Converts `HaxeArgumentGroup` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
 	public static function toCommandArguments(
 		arguments: HaxeArgumentGroup
-	): Array<Array<String>> {
-		final args: Array<Array<String>> = [];
+	): Array<Argument> {
+		final args: Array<Argument> = [];
 
 		maybe(arguments.input).mayDo(input -> {
 			input.toCommandArguments().iter(args.push);
