@@ -1,7 +1,5 @@
 package hxargs;
 
-using Lambda;
-
 class HxArgs {
 	/**
 		Just for type inference of `HaxeArgumentGroup`.

@@ -2,8 +2,6 @@ package hxargs;
 
 import haxe.extern.EitherType;
 
-using hxargs.internal.LambdaInline;
-
 /**
 	Collection of `-D` arguments that are not dependent on a specific target.
 **/

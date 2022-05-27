@@ -1,7 +1,5 @@
 package hxargs;
 
-using hxargs.internal.LambdaInline;
-
 /**
 	Haxe compiler target with some options (if available).
 **/

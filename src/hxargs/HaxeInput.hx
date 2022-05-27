@@ -2,8 +2,6 @@ package hxargs;
 
 import hxargs.internal.Result;
 
-using hxargs.internal.LambdaInline;
-
 @:using(HaxeInput.HaxeInputExtension)
 typedef HaxeInput = {
 	/**

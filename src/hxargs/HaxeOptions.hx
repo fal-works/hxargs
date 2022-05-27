@@ -1,7 +1,5 @@
 package hxargs;
 
-using hxargs.internal.LambdaInline;
-
 @:using(HaxeOptions.HaxeOptionsExtension)
 typedef HaxeOptions = {
 	/**

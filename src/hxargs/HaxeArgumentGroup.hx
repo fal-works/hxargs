@@ -1,7 +1,5 @@
 package hxargs;
 
-using hxargs.internal.LambdaInline;
-
 /**
 	A full set of Haxe arguments.
 
