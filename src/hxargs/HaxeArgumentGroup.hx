@@ -42,7 +42,7 @@ typedef HaxeArgumentGroup = {
 
 class HaxeArgumentGroupExtension {
 	/**
-		Converts `HaxeArgumentGroup` to `Array<String>` that can be passed to `haxe` command.
+		Converts `HaxeArgumentGroup` to `Array<Array<String>>` that can be passed to `haxe` command.
 	**/
 	public static function toCommandArguments(
 		arguments: HaxeArgumentGroup
