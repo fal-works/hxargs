@@ -42,9 +42,14 @@ class HaxeArgumentGroupExtension {
 		arguments: HaxeArgumentGroup
 	): Array<Array<Argument>> {
 		final sections: Array<Array<Argument>> = [];
+		final runWithArgs = maybe(arguments.mode).mapOr(
+			false,
+			mode -> mode.hasOwnArguments()
+		);
+		final main = maybe(arguments.input).flatMap(input -> input.main);
 
 		maybe(arguments.input).mayDo(input -> {
-			input.toCommandArguments().ifNonEmpty(x -> sections.push(x));
+			input.toCommandArguments(!runWithArgs).ifNonEmpty(x -> sections.push(x));
 		});
 
 		maybe(arguments.options).mayDo(options -> {
@@ -61,7 +66,7 @@ class HaxeArgumentGroupExtension {
 
 		// This must be the last
 		maybe(arguments.mode).mayDo(mode -> {
-			mode.toCommandArguments().ifNonEmpty(x -> sections.push(x));
+			mode.toCommandArguments(main).ifNonEmpty(x -> sections.push(x));
 		});
 
 		return sections;

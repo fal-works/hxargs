@@ -12,6 +12,10 @@ abstract Maybe<T>(Null<T>) from Null<T> to Null<T> {
 	public static inline function of<T>(value: T): Maybe<T>
 		return new Maybe(value);
 
+	@:noUsing
+	public static inline function none<T>(): Maybe<T>
+		return new Maybe(null);
+
 	public inline function or(defaultValue: T): T
 		return if (this != null) this else defaultValue;
 
@@ -23,6 +27,11 @@ abstract Maybe<T>(Null<T>) from Null<T> to Null<T> {
 		if (this != null) ifSome(this) else ifNull();
 	}
 
+	public inline function map<U>(func: T->U): Maybe<U> {
+		@:nullSafety(Off)
+		return if (this != null) new Maybe(func(this)) else none();
+	}
+
 	public inline function mapOr<U>(defaultValue: U, func: T->U): U {
 		@:nullSafety(Off)
 		return if (this != null) func(this) else defaultValue;
@@ -30,6 +39,11 @@ abstract Maybe<T>(Null<T>) from Null<T> to Null<T> {
 
 	public inline function mapOrElse<U>(getDefault: () -> U, func: T->U): U
 		return mapOr(getDefault(), func);
+
+	public inline function flatMap<U>(func: T->Maybe<U>): Maybe<U> {
+		@:nullSafety(Off)
+		return if (this != null) func(this) else none();
+	}
 
 	public inline function coalesce(other: Null<T>): Maybe<T>
 		return new Maybe(if (this != null) this else other);

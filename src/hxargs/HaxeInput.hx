@@ -47,12 +47,15 @@ class HaxeInputExtension {
 	/**
 		Converts `HaxeInput` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandArguments(input: HaxeInput): Array<Argument> {
+	public static function toCommandArguments(
+		input: HaxeInput,
+		includeMain: Bool
+	): Array<Argument> {
 		final args: Array<Argument> = [];
 
 		maybe(input.classPaths).mayDo(a -> a.iter(path -> args.push(["-p", path])));
 		maybe(input.libraries).mayDo(a -> a.iter(name -> args.push(["-lib", name])));
-		maybe(input.main).mayDo(path -> args.push(["-m", path]));
+		if (includeMain) maybe(input.main).mayDo(path -> args.push(["-m", path]));
 		maybe(input.entryPoints).mayDo(a -> a.iter(path -> args.push([path])));
 
 		return args;

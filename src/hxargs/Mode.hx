@@ -28,7 +28,7 @@ class ModeExtension {
 	**/
 	public static function toCommandArguments(
 		mode: Mode,
-		?main: String
+		main: Maybe<String>
 	): Array<Argument> {
 		final args: Array<Argument> = [];
 		switch mode {
@@ -73,7 +73,7 @@ class ModeExtension {
 					case Run:
 						args.push(["--interp"]);
 					case RunWithArguments(runArgs):
-						maybe(main).doOrElse(
+						main.doOrElse(
 							() -> throw new HxArgsError("Missing main module."),
 							m -> {
 								args.push(["--run", m]);
