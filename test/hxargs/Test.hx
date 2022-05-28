@@ -11,6 +11,7 @@ function main() {
 		options: {
 			globals: { debug: true },
 		},
+		commands: ["echo (completed)"],
 		mode: Interpret(Run),
-	}).exec(true);
+	}).exec({ printCommand: true });
 }
