@@ -41,34 +41,33 @@ class HaxeArgumentGroupExtension {
 	public static function toCommandArgumentSections(
 		arguments: HaxeArgumentGroup
 	): Array<Array<Argument>> {
-		final sections: Array<Array<Argument>> = [];
 		final runWithArgs = maybe(arguments.mode).mapOr(
 			false,
 			mode -> mode.hasOwnArguments()
 		);
 		final main = maybe(arguments.input).flatMap(input -> input.main);
 
-		maybe(arguments.input).mayDo(input -> {
-			input.toCommandArguments(!runWithArgs).ifNonEmpty(x -> sections.push(x));
+		final input = maybe(arguments.input).map(x -> x.toCommandArguments(!runWithArgs));
+		final options = maybe(arguments.options).map(x -> x.toCommandArguments());
+		final macros = maybe(arguments.macros).map(x -> x.toCommandOptions());
+		final commands = maybe(arguments.commands).map(x -> {
+			return x.map(s -> (["--cmd", s] : Argument));
 		});
+		final mode = maybe(arguments.mode).map(x -> x.toCommandArguments(main));
 
-		maybe(arguments.options).mayDo(options -> {
-			options.toCommandArguments().ifNonEmpty(x -> sections.push(x));
-		});
+		final sections: Array<Maybe<Array<Argument>>> = [
+			input,
+			options,
+			macros
+		];
+		if (runWithArgs) {
+			sections.push(commands);
+			sections.push(mode);
+		} else {
+			sections.push(mode);
+			sections.push(commands);
+		}
 
-		maybe(arguments.macros).mayDo(macros -> {
-			macros.toCommandOptions().ifNonEmpty(x -> sections.push(x));
-		});
-
-		maybe(arguments.commands).mayDo(commands -> {
-			commands.ifNonEmpty(x -> sections.push(x.map(s -> ["--cmd", s])));
-		});
-
-		// This must be the last
-		maybe(arguments.mode).mayDo(mode -> {
-			mode.toCommandArguments(main).ifNonEmpty(x -> sections.push(x));
-		});
-
-		return sections;
+		return sections.map(x -> x.orElse(() -> [])).filter(x -> x.length > 0);
 	}
 }
