@@ -14,15 +14,17 @@ class HxArgs {
 
 	/**
 		Invokes `haxe` command.
+
+		@return Exit code.
 	**/
 	public static function exec(arguments: HaxeArgumentGroup, ?options: {
 		var ?printCommand: Bool;
-	}): Void {
+	}): Int {
 		final args = arguments.toCommandArgumentSections().flatten().flatten();
 
 		if (options != null) {
 			if (options.printCommand == true) {
-				final quotedArgs = switch (Sys.systemName()) {
+				final quotedArgs = switch Sys.systemName() {
 					case "Windows":
 						args.map(token -> SysTools.quoteWinArg(token, true));
 					case _:
@@ -32,6 +34,6 @@ class HxArgs {
 			}
 		}
 
-		Sys.command("haxe", args);
+		return Sys.command("haxe", args);
 	}
 }
