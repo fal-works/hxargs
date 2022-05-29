@@ -9,7 +9,7 @@ function main() {
 			main: "TestProject",
 		},
 		options: {
-			globals: { debug: true },
+			// globals: { debug: true },
 		},
 		commands: ["echo (completed)"],
 		mode: Interpret(Run),
@@ -23,4 +23,10 @@ function main() {
 		argumentGroups: [arguments],
 	}).save("out/test-output.hxml");
 	Sys.command("haxe", ["out/test-output.hxml"]);
+
+	arguments.merge({
+		options: {
+			globals: {debug: true}
+		}
+	}).exec({printCommand: true});
 }

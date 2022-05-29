@@ -1,5 +1,7 @@
 package hxargs;
 
+import hxargs.internal.Nulls;
+
 /**
 	A full set of Haxe arguments.
 
@@ -80,5 +82,16 @@ class HaxeArgumentGroupExtension {
 			headerComment: opt.headerComment,
 			argumentGroups: [arguments],
 		}
+	}
+
+	public static function merge(
+		_this: HaxeArgumentGroup,
+		other: HaxeArgumentGroup
+	): HaxeArgumentGroup {
+		final ret = Nulls.merge(_this, other);
+		if (ret == null)
+			throw new HxArgsError("Failed to merge HaxeArgumentGroup instances.");
+
+		return ret;
 	}
 }
