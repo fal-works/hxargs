@@ -70,4 +70,15 @@ class HaxeArgumentGroupExtension {
 
 		return sections.map(x -> x.orElse(() -> [])).filter(x -> x.length > 0);
 	}
+
+	public static function toHxml(arguments: HaxeArgumentGroup, ?options: {
+		var ?headerComment: String;
+	}): Hxml {
+		final opt = maybe(options).orElse(() -> {});
+
+		return {
+			headerComment: opt.headerComment,
+			argumentGroups: [arguments],
+		}
+	}
 }

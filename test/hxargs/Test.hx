@@ -1,9 +1,9 @@
 package hxargs;
 
-import hxargs.HxArgs.args;
+import hxargs.HxArgs.*;
 
 function main() {
-	args({
+	final arguments = args({
 		input: {
 			classPaths: ["src", "test"],
 			main: "TestProject",
@@ -13,5 +13,14 @@ function main() {
 		},
 		commands: ["echo (completed)"],
 		mode: Interpret(Run),
-	}).exec({ printCommand: true });
+	});
+
+	arguments.exec({ printCommand: true });
+
+	hxml({
+		headerComment: "test output hxml",
+		commonArguments: null,
+		argumentGroups: [arguments],
+	}).save("out/test-output.hxml");
+	Sys.command("haxe", ["out/test-output.hxml"]);
 }

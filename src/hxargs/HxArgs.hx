@@ -13,6 +13,15 @@ class HxArgs {
 	}
 
 	/**
+		Just for type inference of `Hxml`.
+	**/
+	@:noUsing
+	public static inline function hxml(instance: Hxml): Hxml {
+		// type hint is required. See: https://github.com/HaxeFoundation/haxe/issues/10693
+		return (instance : Hxml);
+	}
+
+	/**
 		Invokes `haxe` command.
 
 		@return Exit code.
