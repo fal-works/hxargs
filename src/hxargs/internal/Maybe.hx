@@ -1,7 +1,5 @@
 package hxargs.internal;
 
-using hxargs.internal.LambdaInline;
-
 @:noUsing
 inline function maybe<T>(value: Null<T>): Maybe<T> {
 	@:nullSafety(Off)

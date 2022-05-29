@@ -9,6 +9,3 @@ inline function flatten<T>(iterable: Iterable<Iterable<T>>): Array<T>
 
 inline function exists<T>(iterable: Iterable<T>, func: T->Bool): Bool
 	return Lambda.exists(iterable, func);
-
-inline function proc<T>(value: T, func: T->Void): Void
-	func(value);

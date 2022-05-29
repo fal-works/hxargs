@@ -1,7 +1,5 @@
 package hxargs;
 
-using hxargs.internal.LambdaInline;
-
 @:using(Mode.ModeExtension)
 enum Mode {
 	Compile(compilerMode: CompilerMode, target: CompilerTarget);

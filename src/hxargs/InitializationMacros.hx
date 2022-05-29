@@ -1,7 +1,5 @@
 package hxargs;
 
-using hxargs.internal.LambdaInline;
-
 /**
 	Collection of initialization macros to be applied before typing.
 **/
