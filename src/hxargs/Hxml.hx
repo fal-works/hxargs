@@ -77,10 +77,13 @@ class Hxml {
 		Saves an hxml file.
 		Overwrites the file if it already exists.
 
-		@param filepath Any filepath (which typically ends with `.hxml`).
+		If `filepath` does not end with `.hxml`, the extension will be automatically added.
 	**/
-	public function save(filepath: String) {
-		sys.io.File.saveContent(filepath, this.toString());
+	public function save(filepath: String): HxmlFile {
+		final fpath = if (filepath.endsWith(".hxml")) filepath else '${filepath}.hxml';
+		sys.io.File.saveContent(fpath, this.toString());
+
+		return { filepath: fpath };
 	}
 
 	public function toString(): String {

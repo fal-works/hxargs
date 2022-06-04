@@ -21,12 +21,11 @@ function main() {
 		headerComment: "test output hxml",
 		commonArgumentGroup: null,
 		argumentGroups: [arguments],
-	}).save("out/test-output.hxml");
-	Sys.command("haxe", ["out/test-output.hxml"]);
+	}).save("out/test-output.hxml").run({ printCommand: true });
 
 	arguments.merge({
 		options: {
-			globals: {debug: true}
+			globals: { debug: true }
 		}
-	}).exec({printCommand: true});
+	}).exec({ printCommand: true });
 }
