@@ -1,7 +1,5 @@
 package hxargs;
 
-// TODO: merge()
-
 /**
 	Haxe global arguments.
 
