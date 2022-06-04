@@ -38,6 +38,15 @@ typedef HaxeArgumentGroup = {
 
 class HaxeArgumentGroupExtension {
 	/**
+		Converts `HaxeArgumentGroup` to `Array<String>` that can be passed to `haxe` command.
+	**/
+	public static function toCommandLineArguments(
+		arguments: HaxeArgumentGroup
+	): Array<String> {
+		return toCommandArgumentSections(arguments).flatten().flatten();
+	}
+
+	/**
 		Converts `HaxeArgumentGroup` to `Array<Array<Argument>>` that can be passed to `haxe` command.
 	**/
 	public static function toCommandArgumentSections(
@@ -73,6 +82,9 @@ class HaxeArgumentGroupExtension {
 		return sections.map(x -> x.orElse(() -> [])).filter(x -> x.length > 0);
 	}
 
+	/**
+		Creates a new `Hxml` instance.
+	**/
 	public static function toHxml(arguments: HaxeArgumentGroup, ?options: {
 		var ?headerComment: String;
 	}): Hxml {
@@ -84,6 +96,13 @@ class HaxeArgumentGroupExtension {
 		}
 	}
 
+	/**
+		Creates a new `HaxeArgumentGroup` instance by merging all properties recursively.
+
+		The original instance remains unchanged.
+
+		Throws error if any conflict is found.
+	**/
 	public static function merge(
 		_this: HaxeArgumentGroup,
 		other: HaxeArgumentGroup

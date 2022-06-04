@@ -29,7 +29,7 @@ class HxArgs {
 	public static function exec(arguments: HaxeArgumentGroup, ?options: {
 		var ?printCommand: Bool;
 	}): Int {
-		final args = arguments.toCommandArgumentSections().flatten().flatten();
+		final args = arguments.toCommandLineArguments();
 
 		if (options != null) {
 			if (options.printCommand == true) {
