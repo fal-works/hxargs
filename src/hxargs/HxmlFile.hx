@@ -1,5 +1,8 @@
 package hxargs;
 
+/**
+	Object representing a `*.hxml` file that has been saved.
+**/
 @:structInit
 class HxmlFile {
 	public final filepath: String;
