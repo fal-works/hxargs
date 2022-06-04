@@ -19,7 +19,7 @@ function main() {
 
 	hxml({
 		headerComment: "test output hxml",
-		commonArguments: null,
+		commonArgumentGroup: null,
 		argumentGroups: [arguments],
 	}).save("out/test-output.hxml");
 	Sys.command("haxe", ["out/test-output.hxml"]);

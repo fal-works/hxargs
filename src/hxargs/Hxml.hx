@@ -18,22 +18,74 @@ class Hxml {
 			.join("\n\n");
 	}
 
-	public var headerComment: String = "";
-	public var commonArguments: HaxeArgumentGroup = {};
+	/**
+		Header comment to be inserted at the beginning of the hxml file.
+	**/
+	public final headerComment: String = "";
+
+	/**
+		Arguments that will be applied with `--each`.
+	**/
+	public final commonArgumentGroup: HaxeArgumentGroup = {};
+
+	/**
+		List of `HaxeArgumentGroup` instances.
+		If it has multiple elements, they will be joined with `--next`.
+	**/
 	public final argumentGroups: Array<HaxeArgumentGroup> = [];
 
-	public inline function addNext(argumentGroup: HaxeArgumentGroup): Hxml {
-		this.argumentGroups.push(argumentGroup);
-		return this;
+	/**
+		Creates a new `Hxml` instance by setting the `headerComment` property.
+
+		The original instance remains unchanged.
+	**/
+	public function setHeaderComment(s: String): Hxml {
+		return {
+			headerComment: headerComment,
+			commonArgumentGroup: this.commonArgumentGroup,
+			argumentGroups: this.argumentGroups,
+		};
 	}
 
+	/**
+		Creates a new `Hxml` instance by setting the `commonArgumentGroup` property.
+
+		The original instance remains unchanged.
+	**/
+	public function setEach(args: HaxeArgumentGroup): Hxml {
+		return {
+			headerComment: this.headerComment,
+			commonArgumentGroup: args,
+			argumentGroups: this.argumentGroups,
+		};
+	}
+
+	/**
+		Creates a new `Hxml` instance by appending `argumentGroup` to the `argumentGroups` property.
+
+		The original instance remains unchanged.
+	**/
+	public inline function addNext(argumentGroup: HaxeArgumentGroup): Hxml {
+		return {
+			headerComment: this.headerComment,
+			commonArgumentGroup: this.commonArgumentGroup,
+			argumentGroups: this.argumentGroups.concat([argumentGroup]),
+		};
+	}
+
+	/**
+		Saves an hxml file.
+		Overwrites the file if it already exists.
+
+		@param filepath Any filepath (which typically ends with `.hxml`).
+	**/
 	public function save(filepath: String) {
 		sys.io.File.saveContent(filepath, this.toString());
 	}
 
 	public function toString(): String {
 		final header = headerComment.split("\n").map(s -> '# $s').join("\n");
-		final common = formatArgumentGroup(commonArguments);
+		final common = formatArgumentGroup(commonArgumentGroup);
 		final groups = argumentGroups.map(formatArgumentGroup)
 			.filter(s -> s.length > 0)
 			.join("\n\n--next\n\n");
