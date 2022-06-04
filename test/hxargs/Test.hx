@@ -15,17 +15,17 @@ function main() {
 		mode: Interpret(Run),
 	});
 
-	arguments.exec({ printCommand: true });
+	arguments.toCommand().exec({ printCommand: true });
 
 	hxml({
 		headerComment: "test output hxml",
 		commonArgumentGroup: null,
 		argumentGroups: [arguments],
-	}).save("out/test-output.hxml").run({ printCommand: true });
+	}).save("out/test-output.hxml").toCommand().exec({ printCommand: true });
 
 	arguments.merge({
 		options: {
 			globals: { debug: true }
 		}
-	}).exec({ printCommand: true });
+	}).toCommand().exec({ printCommand: true });
 }

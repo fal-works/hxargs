@@ -7,7 +7,6 @@ import hxargs.internal.Nulls;
 
 	@see https://haxe.org/manual/compiler-usage.html
 **/
-@:using(hxargs.HxArgs)
 @:using(HaxeArgumentGroup.HaxeArgumentGroupExtension)
 typedef HaxeArgumentGroup = {
 	/**
@@ -37,6 +36,16 @@ typedef HaxeArgumentGroup = {
 }
 
 class HaxeArgumentGroupExtension {
+	/**
+		Converts `HaxeArgumentGroup` to a `haxe` command that can be executed on the CLI.
+	**/
+	public static function toCommand(arguments: HaxeArgumentGroup): Command {
+		return {
+			command: "haxe",
+			arguments: arguments.toCommandLineArguments(),
+		};
+	}
+
 	/**
 		Converts `HaxeArgumentGroup` to `Array<String>` that can be passed to `haxe` command.
 	**/
