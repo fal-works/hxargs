@@ -4,18 +4,14 @@ class HxArgs {
 	/**
 		Just for type inference of `HaxeArgumentGroup`.
 	**/
-	public static inline function args(arguments: HaxeArgumentGroup): HaxeArgumentGroup {
-		// type hint is required. See: https://github.com/HaxeFoundation/haxe/issues/10693
-		return (arguments : HaxeArgumentGroup);
-	}
+	public static function args(arguments: HaxeArgumentGroup): HaxeArgumentGroup
+		return arguments;
 
 	/**
 		Just for type inference of `Hxml`.
 	**/
-	public static inline function hxml(instance: Hxml): Hxml {
-		// type hint is required. See: https://github.com/HaxeFoundation/haxe/issues/10693
-		return (instance : Hxml);
-	}
+	public static function hxml(instance: Hxml): Hxml
+		return instance;
 
 	/**
 		Invokes `haxe` command.
