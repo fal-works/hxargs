@@ -3,7 +3,8 @@ package hxargs;
 import hxargs.HxArgs.*;
 
 function main() {
-	Sys.println("[1]");
+	Sys.println("");
+	Sys.println("[1] HxArgs.haxeArguments");
 
 	final arguments = haxeArguments({
 		input: {
@@ -19,7 +20,13 @@ function main() {
 
 	arguments.toCommand().execute({ printCommand: true });
 
-	Sys.println("[2]");
+	Sys.println("");
+	Sys.println("[2] HxArgs.executeHaxe");
+
+	executeHaxe(arguments, { printCommand: true });
+
+	Sys.println("");
+	Sys.println("[3] HxArgs.hxml");
 
 	hxml({
 		headerComment: "test output hxml",
@@ -27,11 +34,14 @@ function main() {
 		argumentGroups: [arguments],
 	}).save("out/test-output.hxml").toCommand().execute({ printCommand: true });
 
-	Sys.println("[3]");
+	Sys.println("");
+	Sys.println("[4] HaxeArgumentGroup.merge");
 
 	arguments.merge({
 		options: {
 			globals: { debug: true }
 		}
 	}).toCommand().execute({ printCommand: true });
+
+	Sys.println("");
 }
