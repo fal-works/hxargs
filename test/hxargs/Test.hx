@@ -5,7 +5,7 @@ import hxargs.HxArgs.*;
 function main() {
 	Sys.println("[1]");
 
-	final arguments = args({
+	final arguments = haxeArguments({
 		input: {
 			classPaths: ["src", "test"],
 			main: "TestProject",
@@ -17,7 +17,7 @@ function main() {
 		mode: Interpret(Run),
 	});
 
-	arguments.toCommand().exec({ printCommand: true });
+	arguments.toCommand().execute({ printCommand: true });
 
 	Sys.println("[2]");
 
@@ -25,7 +25,7 @@ function main() {
 		headerComment: "test output hxml",
 		commonArgumentGroup: null,
 		argumentGroups: [arguments],
-	}).save("out/test-output.hxml").toCommand().exec({ printCommand: true });
+	}).save("out/test-output.hxml").toCommand().execute({ printCommand: true });
 
 	Sys.println("[3]");
 
@@ -33,5 +33,5 @@ function main() {
 		options: {
 			globals: { debug: true }
 		}
-	}).toCommand().exec({ printCommand: true });
+	}).toCommand().execute({ printCommand: true });
 }

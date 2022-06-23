@@ -27,7 +27,7 @@ class Command {
 
 		@return Exit code.
 	**/
-	public function exec(?options: {
+	public function execute(?options: {
 		var printCommand: Bool;
 	}): Int {
 		maybe(options).mayDo(opt -> {

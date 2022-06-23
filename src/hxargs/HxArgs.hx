@@ -4,7 +4,7 @@ class HxArgs {
 	/**
 		Just for type inference of `HaxeArgumentGroup`.
 	**/
-	public static function args(arguments: HaxeArgumentGroup): HaxeArgumentGroup
+	public static function haxeArguments(arguments: HaxeArgumentGroup): HaxeArgumentGroup
 		return arguments;
 
 	/**
@@ -18,9 +18,9 @@ class HxArgs {
 
 		@return Exit code.
 	**/
-	public static function exec(arguments: HaxeArgumentGroup, ?options: {
+	public static function executeHaxe(arguments: HaxeArgumentGroup, ?options: {
 		var ?printCommand: Bool;
 	}): Int {
-		return arguments.toCommand().exec(options);
+		return arguments.toCommand().execute(options);
 	}
 }
