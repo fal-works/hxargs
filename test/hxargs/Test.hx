@@ -3,6 +3,8 @@ package hxargs;
 import hxargs.HxArgs.*;
 
 function main() {
+	Sys.println("[1]");
+
 	final arguments = args({
 		input: {
 			classPaths: ["src", "test"],
@@ -17,11 +19,15 @@ function main() {
 
 	arguments.toCommand().exec({ printCommand: true });
 
+	Sys.println("[2]");
+
 	hxml({
 		headerComment: "test output hxml",
 		commonArgumentGroup: null,
 		argumentGroups: [arguments],
 	}).save("out/test-output.hxml").toCommand().exec({ printCommand: true });
+
+	Sys.println("[3]");
 
 	arguments.merge({
 		options: {
