@@ -37,6 +37,16 @@ typedef HaxeArgumentGroup = {
 
 class HaxeArgumentGroupExtension {
 	/**
+		Invokes `haxe` command.
+
+		This is actually the same as `this.toCommand().execute()`.
+
+		@return Exit code.
+	**/
+	public static function execute(arguments: HaxeArgumentGroup): Int
+		return toCommand(arguments).execute();
+
+	/**
 		Converts `HaxeArgumentGroup` to a `haxe` command that can be executed on the CLI.
 	**/
 	public static function toCommand(arguments: HaxeArgumentGroup): Command {

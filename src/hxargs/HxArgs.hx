@@ -12,12 +12,4 @@ class HxArgs {
 	**/
 	public static function hxml(instance: Hxml): Hxml
 		return instance;
-
-	/**
-		Invokes `haxe` command.
-
-		@return Exit code.
-	**/
-	public static function executeHaxe(arguments: HaxeArgumentGroup): Int
-		return arguments.toCommand().execute();
 }

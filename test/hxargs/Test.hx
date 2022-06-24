@@ -23,12 +23,7 @@ function main() {
 	arguments.toCommand().execute();
 
 	Sys.println("");
-	Sys.println("[2] HxArgs.executeHaxe");
-
-	executeHaxe(arguments);
-
-	Sys.println("");
-	Sys.println("[3] HxArgs.hxml");
+	Sys.println("[2] HxArgs.hxml");
 
 	hxml({
 		headerComment: "test output hxml",
@@ -37,7 +32,7 @@ function main() {
 	}).save("out/test-output.hxml").toCommand().execute();
 
 	Sys.println("");
-	Sys.println("[4] HaxeArgumentGroup.merge");
+	Sys.println("[3] HaxeArgumentGroup.merge");
 
 	arguments.merge({
 		options: {
