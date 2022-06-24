@@ -18,9 +18,6 @@ class HxArgs {
 
 		@return Exit code.
 	**/
-	public static function executeHaxe(arguments: HaxeArgumentGroup, ?options: {
-		var ?printCommand: Bool;
-	}): Int {
-		return arguments.toCommand().execute(options);
-	}
+	public static function executeHaxe(arguments: HaxeArgumentGroup): Int
+		return arguments.toCommand().execute();
 }

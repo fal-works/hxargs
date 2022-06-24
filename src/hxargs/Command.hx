@@ -27,12 +27,9 @@ class Command {
 
 		@return Exit code.
 	**/
-	public function execute(?options: {
-		var printCommand: Bool;
-	}): Int {
-		maybe(options).mayDo(opt -> {
-			if (opt.printCommand == true) Sys.println(this.quote());
-		});
+	public function execute(): Int {
+		if (Config.printBeforeExecution) Sys.println(this.quote());
+
 		return Sys.command(command, arguments);
 	}
 

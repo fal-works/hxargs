@@ -3,6 +3,8 @@ package hxargs;
 import hxargs.HxArgs.*;
 
 function main() {
+	hxargs.Config.printBeforeExecution = true;
+
 	Sys.println("");
 	Sys.println("[1] HxArgs.haxeArguments");
 
@@ -18,12 +20,12 @@ function main() {
 		mode: Interpret(Run),
 	});
 
-	arguments.toCommand().execute({ printCommand: true });
+	arguments.toCommand().execute();
 
 	Sys.println("");
 	Sys.println("[2] HxArgs.executeHaxe");
 
-	executeHaxe(arguments, { printCommand: true });
+	executeHaxe(arguments);
 
 	Sys.println("");
 	Sys.println("[3] HxArgs.hxml");
@@ -32,7 +34,7 @@ function main() {
 		headerComment: "test output hxml",
 		commonArgumentGroup: null,
 		argumentGroups: [arguments],
-	}).save("out/test-output.hxml").toCommand().execute({ printCommand: true });
+	}).save("out/test-output.hxml").toCommand().execute();
 
 	Sys.println("");
 	Sys.println("[4] HaxeArgumentGroup.merge");
@@ -41,7 +43,7 @@ function main() {
 		options: {
 			globals: { debug: true }
 		}
-	}).toCommand().execute({ printCommand: true });
+	}).toCommand().execute();
 
 	Sys.println("");
 }
