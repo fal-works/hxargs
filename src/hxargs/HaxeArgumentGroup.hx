@@ -10,6 +10,13 @@ import hxargs.internal.Nulls;
 @:using(HaxeArgumentGroup.HaxeArgumentGroupExtension)
 typedef HaxeArgumentGroup = {
 	/**
+		Filepaths to `*.hxml` files.
+
+		Limitation: The filepaths will always be inserted as the first arguments.
+	**/
+	var ?baseHxmls: Array<String>;
+
+	/**
 		Input data to be passed to the Haxe compiler.
 	**/
 	var ?input: HaxeInput;
@@ -77,6 +84,9 @@ class HaxeArgumentGroupExtension {
 		);
 		final main = maybe(arguments.input).flatMap(input -> input.main);
 
+		final baseHxmls = maybe(arguments.baseHxmls).map(x -> x.map(path -> {
+			return ([path] : Argument);
+		}));
 		final input = maybe(arguments.input).map(x -> x.toCommandArguments(!runWithArgs));
 		final options = maybe(arguments.options).map(x -> x.toCommandArguments());
 		final macros = maybe(arguments.macros).map(x -> x.toCommandOptions());
@@ -86,6 +96,7 @@ class HaxeArgumentGroupExtension {
 		final mode = maybe(arguments.mode).map(x -> x.toCommandArguments(main));
 
 		final sections: Array<Maybe<Array<Argument>>> = [
+			baseHxmls,
 			input,
 			options,
 			macros
