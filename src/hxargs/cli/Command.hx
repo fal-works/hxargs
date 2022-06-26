@@ -8,14 +8,14 @@ import haxe.SysTools;
 @:structInit
 class Command {
 	public final command: String;
-	public final arguments: Array<String> = [];
+	public final arguments: Array<Argument> = [];
 
 	/**
 		Creates a new `Command` with additional arguments.
 
 		The original instance remains unchanged.
 	**/
-	public function addArguments(args: Array<String>): Command {
+	public function addArguments(args: Array<Argument>): Command {
 		return {
 			command: command,
 			arguments: arguments.concat(args),
@@ -30,21 +30,22 @@ class Command {
 	public function execute(): Int {
 		if (Config.printBeforeExecution) Sys.println(this.quote());
 
-		return Sys.command(command, arguments);
+		return Sys.command(command, arguments.flatten());
 	}
 
 	public function quote(): String {
+		final argTokens = arguments.flatten();
 		final quotedArgs = switch Sys.systemName() {
 			case "Windows":
-				arguments.map(token -> SysTools.quoteWinArg(token, true));
+				argTokens.map(token -> SysTools.quoteWinArg(token, true));
 			case _:
-				arguments.map(SysTools.quoteUnixArg);
+				argTokens.map(SysTools.quoteUnixArg);
 		};
 
 		return '${command} ${quotedArgs.join(" ")}';
 	}
 
 	public function toString(): String {
-		return '${command} ${arguments.join(" ")}';
+		return '${command} ${arguments.flatten().join(" ")}';
 	}
 }

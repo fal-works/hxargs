@@ -28,7 +28,7 @@ class HxmlFile {
 	public function toCommand(): Command {
 		return {
 			command: "haxe",
-			arguments: [filepath],
+			arguments: [[filepath]],
 		};
 	}
 }

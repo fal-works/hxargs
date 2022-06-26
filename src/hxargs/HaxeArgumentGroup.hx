@@ -60,17 +60,17 @@ class HaxeArgumentGroupExtension {
 	public static function toCommand(arguments: HaxeArgumentGroup): Command {
 		return {
 			command: "haxe",
-			arguments: arguments.toCommandLineArguments(),
+			arguments: arguments.toCommandArguments(),
 		};
 	}
 
 	/**
-		Converts `HaxeArgumentGroup` to `Array<String>` that can be passed to `haxe` command.
+		Converts `HaxeArgumentGroup` to `Array<Argument>` that can be passed to `haxe` command.
 	**/
-	public static function toCommandLineArguments(
+	public static function toCommandArguments(
 		arguments: HaxeArgumentGroup
-	): Array<String> {
-		return toCommandArgumentSections(arguments).flatten().flatten();
+	): Array<Argument> {
+		return toCommandArgumentSections(arguments).flatten();
 	}
 
 	/**
