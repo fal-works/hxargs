@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.cli;
 
 import haxe.SysTools;
 

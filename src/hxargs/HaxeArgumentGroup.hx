@@ -1,5 +1,6 @@
 package hxargs;
 
+import hxargs.cli.Command;
 import hxargs.internal.Nulls;
 
 /**

@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.cli;
 
 /**
 	Command-line argument unit consisting of multiple tokens, e.g. `--main Main`.

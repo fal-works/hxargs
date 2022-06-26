@@ -1,5 +1,7 @@
 package hxargs;
 
+import hxargs.cli.Command;
+
 /**
 	Object representing a `*.hxml` file that has been saved.
 **/
