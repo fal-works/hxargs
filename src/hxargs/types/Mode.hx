@@ -1,9 +1,22 @@
 package hxargs.types;
 
+/**
+	Value representing the behavior mode of the Haxe compiler.
+**/
 @:using(Mode.ModeExtension)
 enum Mode {
+	/**
+		Compiles the source code and (basically) produces some output.
+	**/
 	Compile(compilerMode: CompilerMode, target: CompilerTarget);
+
+	/**
+		Interprets the source code and (basically) executes it immediately.
+	**/
 	Interpret(interpreterMode: InterpreterMode, ?options: {
+		/**
+			Defines specific to the Eval target.
+		**/
 		var ?defines: {
 			/** `-D eval-call-stack-depth=<depth>` **/
 			var ?callStackDepth: Int;
