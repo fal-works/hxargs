@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 /**
 	Haxe compiler target with some options (if available).

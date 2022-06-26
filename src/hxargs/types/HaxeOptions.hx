@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 @:using(HaxeOptions.HaxeOptionsExtension)
 typedef HaxeOptions = {

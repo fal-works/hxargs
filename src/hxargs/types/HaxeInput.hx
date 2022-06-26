@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 import hxargs.internal.Result;
 

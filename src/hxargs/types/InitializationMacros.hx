@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 /**
 	Collection of initialization macros to be applied before typing.

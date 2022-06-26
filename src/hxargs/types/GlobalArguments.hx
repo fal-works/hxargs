@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 /**
 	Haxe global arguments.

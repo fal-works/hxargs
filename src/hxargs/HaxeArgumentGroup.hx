@@ -2,6 +2,7 @@ package hxargs;
 
 import hxargs.cli.Command;
 import hxargs.internal.Nulls;
+import hxargs.types.*;
 
 /**
 	A full set of Haxe arguments.

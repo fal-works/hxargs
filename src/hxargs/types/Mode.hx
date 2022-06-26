@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 @:using(Mode.ModeExtension)
 enum Mode {

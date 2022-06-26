@@ -1,4 +1,4 @@
-package hxargs;
+package hxargs.types;
 
 /**
 	Value that represents a call expression of any built-in initialization macro.
