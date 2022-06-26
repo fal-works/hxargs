@@ -5,7 +5,7 @@
 	"tags": [
 		"utility"
 	],
-	"description": "Haxe commandarguments. Type-safe.",
+	"description": "Helps to organize haxe command arguments in a type-safe manner and generate hxml files automatically.",
 	"version": "0.1.0",
 	"classPath": "src/",
 	"releasenote": "Initial release. Everything may change in future.",
